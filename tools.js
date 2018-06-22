@@ -21,7 +21,7 @@ const safeStringify = function (obj) {
     }
 };
 
-const log = function (prefix, args) {
+const logSomeWhere = function (prefix, args) {
     let toLog = "[" + prefix + "] ";
     for (let arg of args) {
         if (typeof arg === "object") {
@@ -33,6 +33,9 @@ const log = function (prefix, args) {
     console.log(`${new Date().toISOString()} ${toLog}`);
 };
 
+const log = function () {
+    logSomeWhere("tools", arguments);
+};
 /**
  * Shuffles array in place. ES6 version
  * @param {Array} a items An array containing the items.
@@ -49,12 +52,14 @@ module.exports = {
     logGenerator: function (flagCallback, prefix) {
         return function () {
             if (flagCallback()) {
-                log(prefix, arguments);
+                logSomeWhere(prefix, arguments);
             }
         };
     },
     readFile: function (data, fieldName, callback) {
+        log("Starting reading file", fieldName);
         fs.readFile(fieldName + '.json', function (err, readData) {
+            log("Done reading file", fieldName);
             if (err) {
                 console.error("Error", err);
             } else {

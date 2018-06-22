@@ -12,21 +12,25 @@ let data = {};
 const runPreconditions = {
     optionsRead: false,
     timesRead: false,
-    serverRunnning: false
+    serverRunnning: false,
+    libraryInitialized: false,
 };
 
 const debug = true;
 const log = tools.logGenerator(() => debug, "index");
 
 const run = function () {
+    let unready = [];
     for (let key of Object.keys(runPreconditions)) {
         const value = runPreconditions[key];
         if (!value) {
-            console.log("Not yet ready:", key);
-            return;
+            unready.push(key);
         }
     }
-    dj.setData(data);
+    if (unready.length !== 0) {
+        console.log("Not yet ready:", unready);
+        return;
+    }
     console.log("Running with options", data.options);
     console.log("Running with times", data.times);
     const audioOptions = { channels: 2, bitDepth: 16, sampleRate: 44100 };
@@ -111,13 +115,21 @@ app.listen(port, function () {
     run();
 });
 
-const readFile = function (fieldName) {
+const readFile = function (fieldName, optionalCallback) {
     const callback = function () {
         runPreconditions[fieldName + 'Read'] = true;
+        if (optionalCallback) {
+            optionalCallback();
+        }
         run();
     };
     tools.readFile(data, fieldName, callback);
 };
 
-readFile('options');
+readFile('options', () => {
+    dj.setData(data, () => {
+        runPreconditions.libraryInitialized = true;
+        run();
+    });
+});
 readFile('times');

@@ -59,6 +59,7 @@ const album = function (genreName, albumName) {
 
 const readLibrary = function () {
     const lib = data.options.library_folder;
+    log("Starting to read library.");
     const start = new Date().valueOf();
     const rootCallback = function (err, rootFiles) {
         let newLibrary = {};
@@ -92,6 +93,7 @@ const readLibrary = function () {
             const end = new Date().valueOf();
             // log("Finished reading library: ", newLibrary);
             log("Finished reading library. (", end - start, "ms )");
+            callbackWhenLibraryRead();
         }
     };
     fs.readdir(lib, rootCallback);
@@ -194,11 +196,14 @@ const getSongs = function () {
     return result;
 }
 
+let callbackWhenLibraryRead;
+
 module.exports = {
     getGenreNames: getGenreNames,
     pickOne: pickOne,
-    setData: function (dataFromIndexJs) {
+    setData: function (dataFromIndexJs, callback) {
         data = dataFromIndexJs;
+        callbackWhenLibraryRead = callback;
         readLibrary();
     },
     pickNextSong: whatWillBeTheNextSong,
