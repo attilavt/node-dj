@@ -124,6 +124,9 @@ const pickNextAlbum = function () {
     log("picking next album...");
     const genre = pickOne(getGenreNames());
     log("picked genre ", genre);
+    if (Object.keys(stateHolder.state.library).indexOf(genre) < 0) {
+        throw "Genre " + genre + " picked from times.json has no entry in library!";
+    }
     let album;
     do {
         album = pickOneFromObject(stateHolder.state.library[genre]);

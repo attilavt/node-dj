@@ -67,6 +67,7 @@ module.exports = {
 
     getHour: function () {
         return new Date().getHours();
+        //return Math.floor(Math.random() * 24);
     },
 
     isBetweenHours: function (theHour, windowStartHour, windowEndHour) {

@@ -68,7 +68,7 @@ const ru = function (fieldName) {
 
 app.get('/hour', function (req, res) {
     handleRequest(req);
-    res.send({ hour: getHour() });
+    res.send({ hour: tools.getHour() });
 });
 
 app.get('/genre-names', function (req, res) {
