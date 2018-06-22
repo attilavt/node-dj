@@ -4,6 +4,7 @@ const app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 const port = 3001;
+const dj = require('./dj');
 
 let data = {};
 
@@ -129,6 +130,11 @@ app.get('/genre-names', function (req, res) {
 app.get('/genre-name', function (req, res) {
     handleRequest(req);
     res.send({ genre_name: pickOne(getGenreNames()) });
+});
+
+app.get('/next-song', function (req, res) {
+    handleRequest(req);
+    res.send({ song_name: dj.pickNextSong() });
 });
 
 ru('times');
