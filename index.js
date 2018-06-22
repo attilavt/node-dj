@@ -1,6 +1,8 @@
 const express = require('express');
 const fs = require('fs');
 const app = express();
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
 const port = 3001;
 
 let data = {};
@@ -31,8 +33,70 @@ const run = function () {
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/health', function (req, res) {
-    res.send('OK')
+    res.send('OK');
 });
+
+const log = function () {
+    let toLog = "";
+    for (let arg of arguments) {
+        if (typeof arg === "object") {
+            console.log("arg is object", arg);
+            toLog += safeStringify(arg) + " ";
+        } else {
+            toLog += arg + " ";
+        }
+    }
+    console.log(`${new Date().toISOString()} ${toLog}`);
+};
+
+const throwError = function (res, code, msg) {
+    res.status(code).send(msg);
+    throw `${code} - ${msg}`;
+};
+
+const safeStringify = function (obj) {
+    try {
+        return JSON.stringify(obj);
+    } catch (err) {
+        console.log("Catching1");
+        let firstLevel = true;
+        const replacer = function (key, value) {
+            if (typeof value === "object" && firstLevel) {
+                firstLevel = false;
+                return value;
+            }
+            if (typeof value === "object" && !firstLevel) {
+                return "an object";
+            }
+            return value;
+        }
+        return JSON.stringify(obj, replacer);
+
+    }
+};
+
+const handleRequest = function (req) {
+    log(`${req.method} ${req.url} received`);
+};
+
+const ru = function (fieldName) {
+    app.get('/' + fieldName, function (req, res) {
+        handleRequest(req);
+        res.send(data[fieldName]);
+    });
+    app.put('/' + fieldName, function (req, res) {
+        handleRequest(req);
+        if (req.body === undefined || typeof req.body !== "object" || Object.keys(req.body).length <= 0) {
+            throwError(res, 400, 'error');
+        }
+        log(`PUT /${fieldName} to ${req.body} (${typeof req.body}) (${JSON.stringify(req.body)})`);
+        data[fieldName] = req.body;
+        res.send('OK');
+    });
+};
+
+ru('times');
+ru('options');
 
 app.listen(port, function () {
     console.log("Listening on port", port);
