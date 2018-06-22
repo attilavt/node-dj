@@ -123,16 +123,16 @@ const isLastSongOfAlbum = function (album, songFileName) {
 const pickNextAlbum = function () {
     log("picking next album...");
     const genre = pickOne(getGenreNames());
-    log("picked genre " + genre);
+    log("picked genre ", genre);
     let album;
     do {
         album = pickOneFromObject(stateHolder.state.library[genre]);
-        log("picked album?" + album);
+        log("picked album?", album);
     } while (!album || album.songs.length === 0);
     if (album.name === NO_ALBUM) {
         tools.shuffle(album.songs);
     }
-    log("picked album " + album);
+    log("picked album ", album);
     return album;
 };
 
