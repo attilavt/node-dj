@@ -13,6 +13,12 @@ const runPreconditions = {
     serverRunnning: false
 };
 
+const pickOne = function (list) {
+    const size = list.length;
+    const index = Math.floor(Math.random() * size);
+    return list[index];
+}
+
 const getHour = function () {
     return new Date().getHours();
 }
@@ -21,6 +27,7 @@ const getGenreNames = function () {
     const hour = getHour();
     for (let time of data.times.time_slots) {
         if (hour > (time.start % 24) && hour < (time.end % 24)) {
+            log("Returning genre names", time.genre_names);
             return time.genre_names;
         }
     }
@@ -117,6 +124,11 @@ app.get('/hour', function (req, res) {
 app.get('/genre-names', function (req, res) {
     handleRequest(req);
     res.send({ genre_names: getGenreNames() });
+});
+
+app.get('/genre-name', function (req, res) {
+    handleRequest(req);
+    res.send({ genre_name: pickOne(getGenreNames()) });
 });
 
 ru('times');
