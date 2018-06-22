@@ -18,10 +18,6 @@ const runPreconditions = {
 const debug = true;
 const log = tools.logGenerator(() => debug, "index");
 
-const getHour = function () {
-    return new Date().getHours();
-}
-
 const run = function () {
     for (let key of Object.keys(runPreconditions)) {
         const value = runPreconditions[key];
@@ -48,27 +44,6 @@ app.get('/health', function (req, res) {
 const throwError = function (res, code, msg) {
     res.status(code).send(msg);
     throw `${code} - ${msg}`;
-};
-
-const safeStringify = function (obj) {
-    try {
-        return JSON.stringify(obj);
-    } catch (err) {
-        console.log("Catching1");
-        let firstLevel = true;
-        const replacer = function (key, value) {
-            if (typeof value === "object" && firstLevel) {
-                firstLevel = false;
-                return value;
-            }
-            if (typeof value === "object" && !firstLevel) {
-                return "an object";
-            }
-            return value;
-        }
-        return JSON.stringify(obj, replacer);
-
-    }
 };
 
 const handleRequest = function (req) {
@@ -106,9 +81,14 @@ app.get('/genre-name', function (req, res) {
     res.send({ genre_name: dj.pickOne(dj.getGenreNames()) });
 });
 
+app.get('/library', function (req, res) {
+    handleRequest(req);
+    res.send({ library: dj.getLibrary() });
+});
+
 app.get('/next-song', function (req, res) {
     handleRequest(req);
-    res.send({ song_name: dj.pickNextSong() });
+    res.send({ song: dj.pickNextSong() });
 });
 
 ru('times');
