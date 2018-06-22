@@ -59,6 +59,7 @@ const album = function (genreName, albumName) {
 
 const readLibrary = function () {
     const lib = data.options.library_folder;
+    const start = new Date().valueOf();
     const rootCallback = function (err, rootFiles) {
         let newLibrary = {};
         if (err) {
@@ -88,7 +89,9 @@ const readLibrary = function () {
                 newLibrary[genreFolderName] = genreObj;
             }
             stateHolder.state.library = newLibrary;
+            const end = new Date().valueOf();
             // log("Finished reading library: ", newLibrary);
+            log("Finished reading library. (", end - start, "ms )");
         }
     };
     fs.readdir(lib, rootCallback);
@@ -177,6 +180,20 @@ const whatWillBeTheNextSong = function () {
     return nextSong;
 };
 
+const getSongs = function () {
+    let result = [];
+    for (let genreName of Object.keys(state().library)) {
+        const genre = state().library[genreName];
+        for (let albumName of Object.keys(genre)) {
+            const album = genre[albumName];
+            for (let song of album.songs) {
+                result.push(song);
+            }
+        }
+    }
+    return result;
+}
+
 module.exports = {
     getGenreNames: getGenreNames,
     pickOne: pickOne,
@@ -187,5 +204,7 @@ module.exports = {
     pickNextSong: whatWillBeTheNextSong,
     getLibrary: function () {
         return stateHolder.state.library;
-    }
+    },
+    readLibrary: readLibrary,
+    getSongs: getSongs,
 };

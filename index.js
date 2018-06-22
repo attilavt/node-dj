@@ -86,9 +86,20 @@ app.get('/library', function (req, res) {
     res.send({ library: dj.getLibrary() });
 });
 
+app.put('/library', function (req, res) {
+    handleRequest(req);
+    dj.readLibrary();
+    res.send({ "status": "Started reading library..." });
+});
+
 app.get('/next-song', function (req, res) {
     handleRequest(req);
     res.send({ song: dj.pickNextSong() });
+});
+
+app.get('/songs', function (req, res) {
+    handleRequest(req);
+    res.send({ songs: dj.getSongs() });
 });
 
 ru('times');
