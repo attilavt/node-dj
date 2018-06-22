@@ -13,6 +13,10 @@ const runPreconditions = {
     serverRunnning: false
 };
 
+const getHour = function () {
+    return new Date().getHours();
+}
+
 const run = function () {
     for (let key of Object.keys(runPreconditions)) {
         const value = runPreconditions[key];
@@ -89,11 +93,16 @@ const ru = function (fieldName) {
         if (req.body === undefined || typeof req.body !== "object" || Object.keys(req.body).length <= 0) {
             throwError(res, 400, 'error');
         }
-        log(`PUT /${fieldName} to ${req.body} (${typeof req.body}) (${JSON.stringify(req.body)})`);
+        log(`PUT /${fieldName} to ${safeStringify(req.body)}`);
         data[fieldName] = req.body;
         res.send('OK');
     });
 };
+
+app.get('/hour', function (req, res) {
+    handleRequest(req);
+    res.send({ hour: getHour() });
+});
 
 ru('times');
 ru('options');
