@@ -17,6 +17,16 @@ const getHour = function () {
     return new Date().getHours();
 }
 
+const getGenreNames = function () {
+    const hour = getHour();
+    for (let time of data.times.time_slots) {
+        if (hour > (time.start % 24) && hour < (time.end % 24)) {
+            return time.genre_names;
+        }
+    }
+    throw "No valid time found for hour " + hour;
+}
+
 const run = function () {
     for (let key of Object.keys(runPreconditions)) {
         const value = runPreconditions[key];
@@ -102,6 +112,11 @@ const ru = function (fieldName) {
 app.get('/hour', function (req, res) {
     handleRequest(req);
     res.send({ hour: getHour() });
+});
+
+app.get('/genre-names', function (req, res) {
+    handleRequest(req);
+    res.send({ genre_names: getGenreNames() });
 });
 
 ru('times');
