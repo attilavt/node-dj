@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 const port = 3001;
 const dj = require('./dj');
+const tools = require('./tools');
 
 let data = {};
 
@@ -14,25 +15,11 @@ const runPreconditions = {
     serverRunnning: false
 };
 
-const pickOne = function (list) {
-    const size = list.length;
-    const index = Math.floor(Math.random() * size);
-    return list[index];
-}
+const debug = true;
+const log = tools.logGenerator(() => debug, "index");
 
 const getHour = function () {
     return new Date().getHours();
-}
-
-const getGenreNames = function () {
-    const hour = getHour();
-    for (let time of data.times.time_slots) {
-        if (hour > (time.start % 24) && hour < (time.end % 24)) {
-            log("Returning genre names", time.genre_names);
-            return time.genre_names;
-        }
-    }
-    throw "No valid time found for hour " + hour;
 }
 
 const run = function () {
@@ -43,7 +30,7 @@ const run = function () {
             return;
         }
     }
-
+    dj.setData(data);
     console.log("Running with options", data.options);
     console.log("Running with times", data.times);
     const audioOptions = { channels: 2, bitDepth: 16, sampleRate: 44100 };
@@ -57,19 +44,6 @@ const run = function () {
 app.get('/health', function (req, res) {
     res.send('OK');
 });
-
-const log = function () {
-    let toLog = "";
-    for (let arg of arguments) {
-        if (typeof arg === "object") {
-            console.log("arg is object", arg);
-            toLog += safeStringify(arg) + " ";
-        } else {
-            toLog += arg + " ";
-        }
-    }
-    console.log(`${new Date().toISOString()} ${toLog}`);
-};
 
 const throwError = function (res, code, msg) {
     res.status(code).send(msg);
@@ -124,12 +98,12 @@ app.get('/hour', function (req, res) {
 
 app.get('/genre-names', function (req, res) {
     handleRequest(req);
-    res.send({ genre_names: getGenreNames() });
+    res.send({ genre_names: dj.getGenreNames() });
 });
 
 app.get('/genre-name', function (req, res) {
     handleRequest(req);
-    res.send({ genre_name: pickOne(getGenreNames()) });
+    res.send({ genre_name: dj.pickOne(dj.getGenreNames()) });
 });
 
 app.get('/next-song', function (req, res) {
@@ -147,15 +121,11 @@ app.listen(port, function () {
 });
 
 const readFile = function (fieldName) {
-    fs.readFile(fieldName + '.json', function (err, readData) {
-        if (err) {
-            console.error("Error", err);
-            throw err;
-        }
-        data[fieldName] = JSON.parse(readData);
+    const callback = function () {
         runPreconditions[fieldName + 'Read'] = true;
         run();
-    });
+    };
+    tools.readFile(data, fieldName, callback);
 };
 
 readFile('options');
