@@ -1,6 +1,8 @@
 const tools = require('./tools');
-const debug = true;
-const log = tools.logGenerator(() => debug, "dj");
+const logLog = true;
+const logDebug = false;
+const log = tools.logGenerator(() => logLog, "dj");
+const debug = tools.logGenerator(() => logDebug, "dj");
 const fs = require('fs');
 const player = require('./player');
 
@@ -29,7 +31,7 @@ const buildPath = function () {
 const NO_ALBUM = "NO_ALBUM";
 const song = function (album, songFileName) {
     if (songFileName.indexOf(".mp3") !== (songFileName.length - 4)) {
-        log("Is not an mp3 file, skipping: ", songFileName);
+        debug("Is not an mp3 file, skipping: ", songFileName);
         return;
     }
     const songFileNameClean = songFileName.substring(0, songFileName.length - 4);
@@ -103,7 +105,7 @@ const pickOne = function (list) {
     }
     const size = list.length;
     const index = Math.floor(Math.random() * size);
-    log("picked " + index + " from list " + tools.safeStringify(list));
+    debug("picked " + index + " from list " + tools.safeStringify(list));
     return list[index];
 };
 
@@ -114,7 +116,7 @@ const pickOneFromObject = function (objectWithKeys) {
     const list = Object.keys(objectWithKeys);
     const size = list.length;
     const index = Math.floor(Math.random() * size);
-    log("picked " + index + " from object " + tools.safeStringify(list));
+    debug("picked " + index + " from object " + tools.safeStringify(list));
     return objectWithKeys[list[index]];
 };
 
@@ -132,7 +134,7 @@ const pickNextAlbum = function () {
     let album;
     do {
         album = pickOneFromObject(stateHolder.state.library[genre]);
-        log("picked album?", album.name, "with", album.songs.length, "songs");
+        debug("picked album?", album.name, "with", album.songs.length, "songs");
     } while (!album || album.songs.length === 0);
     if (album.name === NO_ALBUM) {
         tools.shuffle(album.songs);
@@ -154,7 +156,7 @@ const getGenreNames = function () {
     const hour = tools.getHour();
     for (let time of data.times.time_slots) {
         if (tools.isBetweenHours(hour, time.start, time.end)) {
-            log("Returning genre names", time.genre_names);
+            debug("Returning genre names", time.genre_names);
             return time.genre_names;
         }
     }
@@ -166,7 +168,7 @@ const state = function () {
 }
 
 const whatWillBeTheNextSong = function () {
-    log("picking next song...");
+    log("picking a song to be played after", state().currentSong);
     let nextSongAlbum, nextSong;
     if (state().currentAlbum === null || isLastSongOfAlbum(state().currentAlbum, state().currentSong)) {
         nextSongAlbum = pickNextAlbum();
@@ -199,13 +201,13 @@ const findAlbumByNames = function (genreName, albumName) {
     for (let loopGenreName of Object.keys(state().library)) {
         const genre = state().library[loopGenreName];
         if (loopGenreName === genreName) {
-            log("matched genre", genreName, Object.keys(genre));
+            debug("matched genre", genreName, Object.keys(genre));
             for (let loopAlbumName of Object.keys(genre)) {
                 const album = genre[loopAlbumName];
                 if (albumName === loopAlbumName) {
                     return album;
                 } else {
-                    log("did not match album", albumName, album);
+                    debug("did not match album", albumName, album);
                 }
             }
         }

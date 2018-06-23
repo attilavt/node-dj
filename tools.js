@@ -93,7 +93,6 @@ module.exports = {
             } else {
                 try {
                     data[fieldName] = JSON.parse(readData);
-                    callback();
                 } catch (err2) {
                     const msg2 = "Error when parsing file " + fieldName + ":" + safeStringify(err2);
                     if (throwIfError) {
@@ -103,6 +102,7 @@ module.exports = {
                     }
                 }
             }
+            callback();
         });
     },
     writeFile: function (fileName, data) {
