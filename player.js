@@ -2,7 +2,7 @@ const lame = require('node-lame');
 var Speaker = require('speaker');
 const tools = require('./tools');
 const fs = require('fs');
-const dj = require('./dj');
+let dj;
 
 const audioOptions = { channels: 2, bitDepth: 16, sampleRate: 44100 };
 const debug = true;
@@ -17,9 +17,7 @@ const decoder = new lame.Decoder;
 class Player {
     constructor(fileName) {
         this.fileName = fileName;
-        log("Creating input stream");
         this.inputStream = fs.createReadStream(this.fileName);
-        log("Done creating input stream");
     }
 
     play() {
@@ -36,16 +34,24 @@ class Player {
 
 let currentPlayer;
 
-const play = function () {
+const playSong = function () {
+    log("playSong() called");
     currentPlayer = new Player(dj.getCurrentSong().path);
     currentPlayer.play();
+}
+const playNextSong = function () {
+    log("playNextSong() called");
+    dj.switchToNextSong();
 }
 module.exports = {
     skipSong: function () {
         currentPlayer.stop();
-        play();
+        playSong();
     },
     start: function () {
-        play();
+        playSong();
+    },
+    setDj: function (theDj) {
+        dj = theDj;
     },
 };
