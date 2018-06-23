@@ -103,6 +103,12 @@ app.get('/songs', function (req, res) {
     res.send({ songs: dj.getSongs() });
 });
 
+app.put('/skip', function (req, res) {
+    handleRequest(req);
+    dj.switchToNextSong();
+    res.send({ "status": "Issuing request to switch to next song..." });
+});
+
 ru('times');
 ru('options');
 

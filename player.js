@@ -10,6 +10,7 @@ const log = tools.logGenerator(() => debug, "player");
 const speaker = new Speaker(audioOptions);
 speaker.on('flush', function () {
     log("Done playing");
+    dj.switchToNextSong();
 });
 const decoder = new lame.Decoder;
 
@@ -35,11 +36,16 @@ class Player {
 
 let currentPlayer;
 
+const play = function () {
+    currentPlayer = new Player(dj.getCurrentSong().path);
+    currentPlayer.play();
+}
 module.exports = {
-    skipSong: function () { },
-    start: function () {
-        currentPlayer = new Player(dj.getCurrentSong().path);
-        currentPlayer.play();
+    skipSong: function () {
+        currentPlayer.stop();
+        play();
     },
-    changeNext: function () { },
+    start: function () {
+        play();
+    },
 };
