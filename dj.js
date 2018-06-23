@@ -64,7 +64,7 @@ const readLibrary = function () {
     const rootCallback = function (err, rootFiles) {
         let newLibrary = {};
         if (err) {
-            console.error("error when reading library root");
+            console.error("error when reading library root", err);
         } else {
             for (let genreFolderName of rootFiles) {
                 const genreFolderPath = buildPath(genreFolderName);
