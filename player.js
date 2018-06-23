@@ -1,4 +1,4 @@
-const lame = require('node-lame');
+const lame = require('lame');
 var Speaker = require('speaker');
 const tools = require('./tools');
 const fs = require('fs');

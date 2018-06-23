@@ -5,10 +5,10 @@
     "dependencies": {
         "body-parser": "^1.18.3",
         "express": "^4.16.3",
-        "node-lame": "git+https://github.com/TooTallNate/node-lame.git",
+        "lame": "^1.2.4",
         "speaker": "^0.4.1"
     },
     "scripts": {
-        "start": "node ./index.js"
+        "start": "mkdir log || true && node ./index.js"
     }
 }

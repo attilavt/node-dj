@@ -11,6 +11,11 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 * Songs within album: library/<genre>/<albumname>/<filename>.mp3
 
 # Setup
+## Windows
 For developing and running on windows, the following command must first be run as administrator:
 Press windows key -> enter "Powershell" -> right click and choose "Run as administrator" -> enter command
 `npm install --global --production windows-build-tools`
+
+## Linux (ubuntu)
+For developing and running on linux, the following command must first be run:
+`sudo apt-get install libasound2-dev`
