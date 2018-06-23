@@ -33,11 +33,8 @@ const run = function () {
     }
     console.log("Running with options", data.options);
     console.log("Running with times", data.times);
-    const audioOptions = { channels: 2, bitDepth: 16, sampleRate: 44100 };
 
-    // Create Decoder and Speaker
-    //const decoder = lame.Decoder();
-    //let speaker = new Speaker(audioOptions);
+    dj.play();
 };
 
 // respond with "hello world" when a GET request is made to the homepage

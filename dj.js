@@ -2,9 +2,10 @@ const tools = require('./tools');
 const debug = true;
 const log = tools.logGenerator(() => debug, "dj");
 const fs = require('fs');
+const player = require('./player');
 
 const writeState = function () {
-    fs.writeFile('state.json', JSON.stringify(state), function (err) {
+    fs.writeFile('state.json', JSON.stringify(state()), function (err) {
         log("error when writing state!");
     });
 };
@@ -12,7 +13,8 @@ const writeState = function () {
 let stateHolder = {
     state: {
         currentSong: null,
-        currentAlbum: null
+        currentAlbum: null,
+        history: []
     }
 };
 
@@ -117,7 +119,6 @@ const pickOneFromObject = function (objectWithKeys) {
     const size = list.length;
     const index = Math.floor(Math.random() * size);
     log("picked " + index + " from object " + tools.safeStringify(list));
-    log("picked value " + tools.safeStringify(objectWithKeys[list[index]]));
     return objectWithKeys[list[index]];
 };
 
@@ -135,12 +136,12 @@ const pickNextAlbum = function () {
     let album;
     do {
         album = pickOneFromObject(stateHolder.state.library[genre]);
-        log("picked album?", album);
+        log("picked album?", album.name, "with", album.songs.length, "songs");
     } while (!album || album.songs.length === 0);
     if (album.name === NO_ALBUM) {
         tools.shuffle(album.songs);
     }
-    log("picked album ", album);
+    log("picked album! ", album.name, "with", album.songs.length, "songs");
     return album;
 };
 
@@ -198,6 +199,26 @@ const getSongs = function () {
 
 let callbackWhenLibraryRead;
 
+const findAlbumByNames = function (genreName, albumName) {
+    for (let genreName of Object.keys(state().library)) {
+        const genre = state().library[genreName];
+        if (genre.name === genreName) {
+            for (let albumName of Object.keys(genre)) {
+                const album = genre[albumName];
+                if (album.name === name) {
+                    return album;
+                }
+            }
+        }
+    }
+    throw "Could not find album with name " + name + " in genre with name " + genreName;
+};
+
+const writeSongIntoHistory = function (song) {
+    const date = new Date();
+    state().history.push({ timestamp: date.valueOf(), time: date.toString(), song: song });
+}
+
 module.exports = {
     getGenreNames: getGenreNames,
     pickOne: pickOne,
@@ -212,4 +233,16 @@ module.exports = {
     },
     readLibrary: readLibrary,
     getSongs: getSongs,
+    play: function () {
+        currentSong = whatWillBeTheNextSong();
+        currentAlbum = findAlbumByNames(currentSong.genre, currentSong.album);
+        player.start();
+    },
+    switchToNextSong: function () {
+        writeSongIntoHistory(currentSong);
+        currentSong = whatWillBeTheNextSong();
+        currentAlbum = findAlbumByNames(currentSong.genre, currentSong.album);
+        player.start();
+        writeState();
+    }
 };

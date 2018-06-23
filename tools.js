@@ -1,4 +1,6 @@
 const fs = require('fs');
+const logFileName = `log-${new Date()}.txt`;
+const fullLog = "";
 
 const safeStringify = function (obj) {
     try {
@@ -30,6 +32,10 @@ const logSomeWhere = function (prefix, args) {
             toLog += arg + " ";
         }
     }
+    fullLog += toLog + "\n";
+    fs.writeFile(logFileName, fullLog, (err) => {
+        console.error("Error when writing log", err);
+    });
     console.log(`${new Date().toISOString()} ${toLog}`);
 };
 
