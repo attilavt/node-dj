@@ -9,6 +9,6 @@
         "speaker": "^0.4.1"
     },
     "scripts": {
-        "start": "mkdir log || true && node ./index.js"
+        "start": "node ./index.js"
     }
 }
