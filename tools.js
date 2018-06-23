@@ -1,6 +1,25 @@
 const fs = require('fs');
-const logFileName = `log-${new Date()}.txt`;
-const fullLog = "";
+const date = function () {
+    const res = new Date().toISOString().replace(":", "_").replace(":", "_");
+    console.log("logfile name", res);
+    return res;
+};
+const logFileName = `log/log-${date()}.txt`;
+fs.writeFileSync(logFileName, "");
+let fullLog = "";
+let logToWrite = [];
+
+setInterval(() => {
+    for (let line of logToWrite) {
+        fullLog += line + "\n";
+    }
+    logToWrite = [];
+    fs.writeFile(logFileName, fullLog, (err) => {
+        if (err) {
+            console.error("error when writing to log", err);
+        }
+    });
+}, 3000);
 
 const safeStringify = function (obj) {
     try {
@@ -32,11 +51,9 @@ const logSomeWhere = function (prefix, args) {
             toLog += arg + " ";
         }
     }
-    fullLog += toLog + "\n";
-    fs.writeFile(logFileName, fullLog, (err) => {
-        console.error("Error when writing log", err);
-    });
-    console.log(`${new Date().toISOString()} ${toLog}`);
+    toLog = `${new Date().toISOString()} ${toLog}`;
+    console.log(toLog);
+    logToWrite.push(toLog);
 };
 
 const log = function () {
@@ -62,15 +79,36 @@ module.exports = {
             }
         };
     },
-    readFile: function (data, fieldName, callback) {
+    readFile: function (data, fieldName, callback, throwIfError) {
         log("Starting reading file", fieldName);
-        fs.readFile(fieldName + '.json', function (err, readData) {
+        fs.readFile('data/' + fieldName + '.json', function (err, readData) {
             log("Done reading file", fieldName);
             if (err) {
-                console.error("Error", err);
+                const msg = "Error when reading file " + fieldName + ":" + safeStringify(err);
+                if (throwIfError) {
+                    throw msg;
+                } else {
+                    console.error(msg);
+                }
             } else {
-                data[fieldName] = JSON.parse(readData);
-                callback();
+                try {
+                    data[fieldName] = JSON.parse(readData);
+                    callback();
+                } catch (err2) {
+                    const msg2 = "Error when parsing file " + fieldName + ":" + safeStringify(err2);
+                    if (throwIfError) {
+                        throw msg2;
+                    } else {
+                        console.error(msg2);
+                    }
+                }
+            }
+        });
+    },
+    writeFile: function (fileName, data) {
+        fs.writeFile(fileName, data, function (err) {
+            if (err) {
+                log("error when writing file!", fileName, err);
             }
         });
     },

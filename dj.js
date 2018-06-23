@@ -5,9 +5,7 @@ const fs = require('fs');
 const player = require('./player');
 
 const writeState = function () {
-    fs.writeFile('state.json', JSON.stringify(state()), function (err) {
-        log("error when writing state!");
-    });
+    tools.writeFile('data/state.json', JSON.stringify(state()));
 };
 
 let stateHolder = {
@@ -17,8 +15,6 @@ let stateHolder = {
         history: []
     }
 };
-
-tools.readFile(stateHolder, 'state', () => { });
 
 let data = null;
 
@@ -200,18 +196,21 @@ const getSongs = function () {
 let callbackWhenLibraryRead;
 
 const findAlbumByNames = function (genreName, albumName) {
-    for (let genreName of Object.keys(state().library)) {
-        const genre = state().library[genreName];
-        if (genre.name === genreName) {
-            for (let albumName of Object.keys(genre)) {
-                const album = genre[albumName];
-                if (album.name === name) {
+    for (let loopGenreName of Object.keys(state().library)) {
+        const genre = state().library[loopGenreName];
+        if (loopGenreName === genreName) {
+            log("matched genre", genreName, Object.keys(genre));
+            for (let loopAlbumName of Object.keys(genre)) {
+                const album = genre[loopAlbumName];
+                if (albumName === loopAlbumName) {
                     return album;
+                } else {
+                    log("did not match album", albumName, album);
                 }
             }
         }
     }
-    throw "Could not find album with name " + name + " in genre with name " + genreName;
+    throw "Could not find album with name " + albumName + " in genre with name " + genreName + " in lib with " + Object.keys(state().library);
 };
 
 const writeSongIntoHistory = function (song) {
@@ -222,10 +221,12 @@ const writeSongIntoHistory = function (song) {
 module.exports = {
     getGenreNames: getGenreNames,
     pickOne: pickOne,
-    setData: function (dataFromIndexJs, callback) {
+    setData: function (dataFromIndexJs, callbackLibrary, callbackState) {
         data = dataFromIndexJs;
-        callbackWhenLibraryRead = callback;
+        callbackWhenLibraryRead = callbackLibrary;
+        player.setDj(this);
         readLibrary();
+        tools.readFile(stateHolder, 'state', () => { callbackState(); }, false);
     },
     pickNextSong: whatWillBeTheNextSong,
     getLibrary: function () {
@@ -244,5 +245,8 @@ module.exports = {
         currentAlbum = findAlbumByNames(currentSong.genre, currentSong.album);
         player.start();
         writeState();
-    }
+    },
+    getCurrentSong: function () {
+        return currentSong;
+    },
 };

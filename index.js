@@ -7,13 +7,19 @@ const port = 3001;
 const dj = require('./dj');
 const tools = require('./tools');
 
-let data = {};
+let data = {
+    options: {
+        library_folder: ".",
+        folder_separator: "/"
+    }
+};
 
 const runPreconditions = {
     optionsRead: false,
     timesRead: false,
     serverRunnning: false,
     libraryInitialized: false,
+    djStateInitialized: false,
 };
 
 const debug = true;
@@ -126,12 +132,15 @@ const readFile = function (fieldName, optionalCallback) {
         }
         run();
     };
-    tools.readFile(data, fieldName, callback);
+    tools.readFile(data, fieldName, callback, false);
 };
 
 readFile('options', () => {
     dj.setData(data, () => {
         runPreconditions.libraryInitialized = true;
+        run();
+    }, () => {
+        runPreconditions.djStateInitialized = true;
         run();
     });
 });
