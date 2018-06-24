@@ -9,6 +9,7 @@
         "speaker": "^0.4.1"
     },
     "scripts": {
-        "start": "node ./index.js"
+        "start": "node ./index.js",
+        "start_with_mock_dj": "node ./dj.mock.js"
     }
 }
