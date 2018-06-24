@@ -220,13 +220,24 @@ const writeSongIntoHistory = function (song) {
     state().history.push({ timestamp: date.valueOf(), time: date.toString(), song: song });
 }
 
+const switchToNextSong = function () {
+    writeSongIntoHistory(currentSong);
+    playSong();
+    writeState();
+};
+
+const playSong = function () {
+    currentSong = whatWillBeTheNextSong();
+    currentAlbum = findAlbumByNames(currentSong.genre, currentSong.album);
+    player.play(currentSong.path, switchToNextSong);
+};
+
 module.exports = {
     getGenreNames: getGenreNames,
     pickOne: pickOne,
     setData: function (dataFromIndexJs, callbackLibrary, callbackState) {
         data = dataFromIndexJs;
         callbackWhenLibraryRead = callbackLibrary;
-        player.setDj(this);
         readLibrary();
         tools.readFile(stateHolder, 'state', () => { callbackState(); }, false);
     },
@@ -236,18 +247,7 @@ module.exports = {
     },
     readLibrary: readLibrary,
     getSongs: getSongs,
-    play: function () {
-        currentSong = whatWillBeTheNextSong();
-        currentAlbum = findAlbumByNames(currentSong.genre, currentSong.album);
-        player.start();
-    },
-    switchToNextSong: function () {
-        writeSongIntoHistory(currentSong);
-        currentSong = whatWillBeTheNextSong();
-        currentAlbum = findAlbumByNames(currentSong.genre, currentSong.album);
-        player.start();
-        writeState();
-    },
+    play: playSong,
     getCurrentSong: function () {
         return currentSong;
     },

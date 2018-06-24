@@ -9,59 +9,49 @@ const logLog = true;
 const logDebug = true;
 const log = tools.logGenerator(() => logLog, "player");
 const debug = tools.logGenerator(() => logDebug, "player");
-const speaker = new Speaker(audioOptions);
-speaker.on('flush', function () {
-    log("Done playing");
-    playNextSong();
-});
+let speaker;
 const decoder = new lame.Decoder;
 
-class Player {
-    constructor(fileName) {
-        this.fileName = fileName;
-        debug("Creating read stream for", fileName);
-        this.inputStream = fs.createReadStream(this.fileName);
-        debug("Created read stream for", fileName);
-    }
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+};
 
-    play() {
-        log("Starting to play ", this.fileName);
-        this.inputStream.pipe(decoder).pipe(speaker);
-        debug("Successfully started to play ", this.fileName);
-    }
+const playSong = function (path, callbackWhenDone) {
+    log("playSong called with", path);
+    speaker = new Speaker(audioOptions);
+    debug("Speaker initialized");
+    // Read the first file
+    let inputStream = fs.createReadStream(path);
+    debug("Read stream created");
+    // Pipe the read data into the decoder and then out to the speakers
+    const date1 = new Date().valueOf();
+    inputStream.pipe(decoder);
+    //inputStream.pipe(decoder).pipe(speaker);
+    const date2 = new Date().valueOf();
+    debug("Stream piped to decoder and speaker");
+    speaker.on('error', function (e) {
+        log("speaker error", e);
+    });
+    speaker.on('flush', async function () {
+        const date3 = new Date().valueOf();
+        log("finished playing", path, "after", date3 - date1, "ms /", date3 - date2, "ms");
+        log("speaker", speaker);
+        log("checking writable state");
+        while (!speaker._writableState.ended) {
+            log("Starting to sleep", speaker);
+            const date4 = new Date().valueOf();
+            await sleep(100);
+            const date5 = new Date().valueOf();
+            log("Slept", date5 - date4);
+        }
 
-    stop() {
-        log("Stopping to play ", this.fileName);
-        this.inputStream.unpipe(decoder).unpipe(speaker);
-        this.inputStream.close();
-        debug("Successfully stopped to play ", this.fileName);
-    }
-}
-
-let currentPlayer;
-
-const playSong = function () {
-    debug("playSong() called");
-    if (currentPlayer) {
-        currentPlayer.stop();
-    }
-    currentPlayer = new Player(dj.getCurrentSong().path);
-    currentPlayer.play();
-}
-const playNextSong = function () {
-    debug("playNextSong() called");
-    // currentPlayer.stop();
-    dj.switchToNextSong();
+        //speaker.end();
+        //inputStream.destroy();
+        // Play next song, if there is one.
+        callbackWhenDone();
+    });
+    setTimeout(callbackWhenDone, 2000);
 }
 module.exports = {
-    skipSong: function () {
-        // currentPlayer.stop();
-        playSong();
-    },
-    start: function () {
-        playSong();
-    },
-    setDj: function (theDj) {
-        dj = theDj;
-    },
+    playSong: playSong,
 };
