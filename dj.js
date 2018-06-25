@@ -258,4 +258,5 @@ module.exports = {
     getCurrentSong: function () {
         return state().currentSong;
     },
+    switchToNextSong: switchToNextSong
 };
