@@ -72,6 +72,14 @@ const shuffle = function (a) {
     return a;
 }
 
+const padToLength = function (aNumber, length) {
+    let result = "" + aNumber;
+    while (result.length < length) {
+        result = "0" + result;
+    }
+    return result;
+}
+
 module.exports = {
     logGenerator: function (flagCallback, prefix) {
         return function () {
@@ -131,4 +139,14 @@ module.exports = {
     },
 
     safeStringify: safeStringify,
+
+    msToTime: function (millis) {
+        const seconds = Math.round(millis / 1000);
+        const minutes = Math.round(seconds / 60);
+        if (minutes >= 60) {
+            const hours = Math.floor(minutes / 60);
+            return hours + ":" + padToLength(minutes % 60, 2) + ":" + padToLength(seconds, 2);
+        }
+        return minutes + ":" + padToLength(seconds, 2);
+    },
 }

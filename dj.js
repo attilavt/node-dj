@@ -229,7 +229,7 @@ const switchToNextSong = function () {
 const playSong = function () {
     currentSong = whatWillBeTheNextSong();
     currentAlbum = findAlbumByNames(currentSong.genre, currentSong.album);
-    player.play(currentSong.path, switchToNextSong);
+    player.playSong(currentSong.path, switchToNextSong);
 };
 
 module.exports = {
