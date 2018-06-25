@@ -45,8 +45,15 @@ const song = function (album, songFileName) {
         artist: artistName,
         song: songName,
         songFileName: songFileNameClean,
-        path: path
+        path: path,
     });
+}
+
+const readableSong = function (song) {
+    if (!song) {
+        return "no song!";
+    }
+    return song.artist + (song.song ? " - \"" + song.song + "\"" : "");
 }
 
 const album = function (genreName, albumName) {
@@ -168,7 +175,7 @@ const state = function () {
 }
 
 const whatWillBeTheNextSong = function () {
-    log("picking a song to be played after", state().currentSong);
+    log("picking a song to be played after", readableSong(state().currentSong));
     let nextSongAlbum, nextSong;
     if (state().currentAlbum === null || isLastSongOfAlbum(state().currentAlbum, state().currentSong)) {
         nextSongAlbum = pickNextAlbum();
@@ -176,7 +183,7 @@ const whatWillBeTheNextSong = function () {
     } else {
         log("picking next song of current album!");
         nextSongAlbum = state().currentAlbum;
-        nextSong = getNextSongInAlbum(nextSongAlbum, state.currentSong);
+        nextSong = getNextSongInAlbum(nextSongAlbum, state().currentSong);
     }
     return nextSong;
 };
@@ -221,15 +228,15 @@ const writeSongIntoHistory = function (song) {
 }
 
 const switchToNextSong = function () {
-    writeSongIntoHistory(currentSong);
+    writeSongIntoHistory(state().currentSong);
     playSong();
     writeState();
 };
 
 const playSong = function () {
-    currentSong = whatWillBeTheNextSong();
-    currentAlbum = findAlbumByNames(currentSong.genre, currentSong.album);
-    player.playSong(currentSong.path, switchToNextSong);
+    state().currentSong = whatWillBeTheNextSong();
+    state().currentAlbum = findAlbumByNames(state().currentSong.genre, state().currentSong.album);
+    player.playSong(state().currentSong.path, switchToNextSong);
 };
 
 module.exports = {
@@ -249,6 +256,6 @@ module.exports = {
     getSongs: getSongs,
     play: playSong,
     getCurrentSong: function () {
-        return currentSong;
+        return state().currentSong;
     },
 };
