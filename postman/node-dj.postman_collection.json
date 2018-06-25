@@ -1,0 +1,276 @@
+{
+	"info": {
+		"name": "node-dj",
+		"_postman_id": "c18d312a-75d1-6e63-c1a7-070abf133719",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "meta-information",
+			"description": "",
+			"item": [
+				{
+					"name": "GET times",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "888a99e4-47c2-4227-a85d-e3878c04bc2b",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Body contains time slots\", function () {",
+									"    var re = pm.response.json();",
+									"    pm.expect(re.time_slots.size > 0).to.equal(true);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "localhost:3001/api/times",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"times"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "PUT times",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"timeSlots\": [\n        {\n            \"start\": 6,\n            \"end\": 9,\n            \"genre_names\": [\n                \"Oldies Heap\"\n            ]\n        },\n        {\n            \"start\": 9,\n            \"end\": 11,\n            \"genre_names\": [\n                \"Reggae Heap\"\n            ]\n        },\n        {\n            \"start\": 11,\n            \"end\": 14,\n            \"genre_names\": [\n                \"Ska Heap\",\n                \"Synthwave Heap\"\n            ]\n        },\n        {\n            \"start\": 14,\n            \"end\": 18,\n            \"genre_names\": [\n                \"Hip Hop Heap\",\n                \"Mainstream Heap\",\n                \"Reggae Heap\"\n            ]\n        },\n        {\n            \"start\": 18,\n            \"end\": 21,\n            \"genre_names\": [\n                \"French Heap\",\n                \"Oldies Heap\",\n                \"Turkish Heap\"\n            ]\n        },\n        {\n            \"start\": 21,\n            \"end\": 23,\n            \"genre_names\": [\n                \"Indie HQ Heap\",\n                \"Turkpop Heap\",\n                \"World Heap\"\n            ]\n        },\n        {\n            \"start\": 23,\n            \"end\": 6,\n            \"genre_names\": [\n                \"Dubstep Heap\",\n                \"Electronic HQ Heap\",\n                \"Meme Heap\",\n                \"Trap Heap\"\n            ]\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "localhost:3001/api/times",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"times"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET hour",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "localhost:3001/api/hour",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"hour"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET genre names",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "localhost:3001/api/genre-names",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"genre-names"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET genre name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "localhost:3001/api/genre-name",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"genre-name"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "PUT library",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "localhost:3001/api/library",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"library"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET library",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "localhost:3001/api/library",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"library"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET songs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "localhost:3001/api/songs",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"songs"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "commands",
+			"description": "",
+			"item": [
+				{
+					"name": "GET next song",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "localhost:3001/api/next-song",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"next-song"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "PUT skip to next",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "localhost:3001/api/skip",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"skip"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:3001/api/health",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"api",
+						"health"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
