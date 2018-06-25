@@ -59,6 +59,7 @@ const logSomeWhere = function (prefix, args) {
 const log = function () {
     logSomeWhere("tools", arguments);
 };
+
 /**
  * Shuffles array in place. ES6 version
  * @param {Array} a items An array containing the items.
@@ -88,7 +89,7 @@ module.exports = {
                 if (throwIfError) {
                     throw msg;
                 } else {
-                    console.error(msg);
+                    log("ERROR!", msg);
                 }
             } else {
                 try {
@@ -98,7 +99,7 @@ module.exports = {
                     if (throwIfError) {
                         throw msg2;
                     } else {
-                        console.error(msg2);
+                        log("ERROR!!", msg2);
                     }
                 }
             }

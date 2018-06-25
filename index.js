@@ -34,11 +34,11 @@ const run = function () {
         }
     }
     if (unready.length !== 0) {
-        console.log("Not yet ready:", unready);
+        log("Not yet ready:", unready);
         return;
     }
-    console.log("Running with options", data.options);
-    console.log("Running with times", data.times);
+    log("Running with options", data.options);
+    log("Running with times", data.times);
 
     dj.play();
 };
@@ -119,7 +119,7 @@ ru('times');
 ru('options');
 
 app.listen(port, function () {
-    console.log("Listening on port", port);
+    log("Listening on port", port);
     runPreconditions.serverRunnning = true;
     run();
 });
