@@ -28,4 +28,4 @@ Press windows key -> enter "Powershell" -> right click and choose "Run as admini
 
 ## Linux (ubuntu)
 For developing and running on linux, the following command must first be run:
-`sudo apt-get install libasound2-dev`
+`sudo apt-get install -y libasound2-dev make gcc g++`
