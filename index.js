@@ -44,7 +44,7 @@ const run = function () {
 };
 
 // respond with "hello world" when a GET request is made to the homepage
-app.get('/health', function (req, res) {
+app.get('/api/health', function (req, res) {
     res.send('OK');
 });
 
@@ -58,58 +58,58 @@ const handleRequest = function (req) {
 };
 
 const ru = function (fieldName) {
-    app.get('/' + fieldName, function (req, res) {
+    app.get('/api/' + fieldName, function (req, res) {
         handleRequest(req);
         res.send(data[fieldName]);
     });
-    app.put('/' + fieldName, function (req, res) {
+    app.put('/api/' + fieldName, function (req, res) {
         handleRequest(req);
         if (req.body === undefined || typeof req.body !== "object" || Object.keys(req.body).length <= 0) {
             throwError(res, 400, 'error');
         }
-        log(`PUT /${fieldName} to ${safeStringify(req.body)}`);
+        log(`PUT /api/${fieldName} to ${safeStringify(req.body)}`);
         data[fieldName] = req.body;
         res.send('OK');
     });
 };
 
-app.get('/hour', function (req, res) {
+app.get('/api/hour', function (req, res) {
     handleRequest(req);
     res.send({ hour: tools.getHour() });
 });
 
-app.get('/genre-names', function (req, res) {
+app.get('/api/genre-names', function (req, res) {
     handleRequest(req);
     res.send({ genre_names: dj.getGenreNames() });
 });
 
-app.get('/genre-name', function (req, res) {
+app.get('/api/genre-name', function (req, res) {
     handleRequest(req);
     res.send({ genre_name: dj.pickOne(dj.getGenreNames()) });
 });
 
-app.get('/library', function (req, res) {
+app.get('/api/library', function (req, res) {
     handleRequest(req);
     res.send({ library: dj.getLibrary() });
 });
 
-app.put('/library', function (req, res) {
+app.put('/api/library', function (req, res) {
     handleRequest(req);
     dj.readLibrary();
     res.send({ "status": "Started reading library..." });
 });
 
-app.get('/next-song', function (req, res) {
+app.get('/api/next-song', function (req, res) {
     handleRequest(req);
     res.send({ song: dj.pickNextSong() });
 });
 
-app.get('/songs', function (req, res) {
+app.get('/api/songs', function (req, res) {
     handleRequest(req);
     res.send({ songs: dj.getSongs() });
 });
 
-app.put('/skip', function (req, res) {
+app.put('/api/skip', function (req, res) {
     handleRequest(req);
     dj.switchToNextSong();
     res.send({ "status": "Issuing request to switch to next song..." });
