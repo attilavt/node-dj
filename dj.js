@@ -56,6 +56,13 @@ const readableSong = function (song) {
     return song.artist + (song.song ? " - \"" + song.song + "\"" : "");
 }
 
+const readableAlbum = function (album) {
+    if (!album) {
+        return "no album!";
+    }
+    return album.name + " of " + album.genre;
+}
+
 const album = function (genreName, albumName) {
     return {
         name: albumName,
@@ -163,7 +170,7 @@ const getGenreNames = function () {
     const hour = tools.getHour();
     for (let time of data.times.time_slots) {
         if (tools.isBetweenHours(hour, time.start, time.end)) {
-            debug("Returning genre names", time.genre_names);
+            log("Returning genre names", time.genre_names, "for hour", hour);
             return time.genre_names;
         }
     }
@@ -177,15 +184,22 @@ const state = function () {
 const whatWillBeTheNextSong = function () {
     log("picking a song to be played after", readableSong(state().currentSong));
     let nextSongAlbum, nextSong;
-    if (state().currentAlbum === null || isLastSongOfAlbum(state().currentAlbum, state().currentSong)) {
+
+    const thereIsNoCurrentAlbum = state().currentAlbum === null;
+    const currentAlbumsLastSongWasPlayed = thereIsNoCurrentAlbum ? false : isLastSongOfAlbum(state().currentAlbum, state().currentSong);
+    const currentAlbumDoesNotFitInTime = thereIsNoCurrentAlbum ? false : getGenreNames().indexOf(state().currentAlbum.genre) < 0;
+
+    if (thereIsNoCurrentAlbum || currentAlbumsLastSongWasPlayed || currentAlbumDoesNotFitInTime) {
+        log("picking a new album! Why? thereIsNoCurrentAlbum ", thereIsNoCurrentAlbum, "currentAlbumsLastSongWasPlayed",
+            currentAlbumsLastSongWasPlayed, "currentAlbumDoesNotFitInTime", currentAlbumDoesNotFitInTime);
         nextSongAlbum = pickNextAlbum();
         nextSong = getFirstSongInAlbum(nextSongAlbum);
     } else {
-        log("picking next song of current album!");
+        log("picking next song of current album! (" + readableAlbum(state().currentAlbum) + ")");
         nextSongAlbum = state().currentAlbum;
         nextSong = getNextSongInAlbum(nextSongAlbum, state().currentSong);
     }
-    return nextSong;
+    return { song: nextSong, album: nextSongAlbum };
 };
 
 const getSongs = function () {
@@ -227,15 +241,43 @@ const writeSongIntoHistory = function (song) {
     state().history.push({ timestamp: date.valueOf(), time: date.toString(), song: song });
 }
 
-const switchToNextSong = function () {
-    writeSongIntoHistory(state().currentSong);
-    playSong();
-    writeState();
+const currentMusic = function () {
+    try {
+        return { song: readableSong(state().currentSong), album: readableAlbum(state().currentAlbum) };
+    } catch (err) {
+        return { song: "Error in currentMusic(): " + err, album: "Error" };
+    }
 };
 
-const playSong = function () {
-    state().currentSong = whatWillBeTheNextSong();
-    state().currentAlbum = findAlbumByNames(state().currentSong.genre, state().currentSong.album);
+const switchToNextSong = function () {
+    writeSongIntoHistory(state().currentSong);
+    const before = currentMusic();
+    pickTrackAndPlay();
+    const after = currentMusic();
+    writeState();
+    return { before: before, after: after };
+};
+
+const switchToNextAlbum = function () {
+    writeSongIntoHistory(state().currentSong);
+    const before = currentMusic();
+    const album = pickNextAlbum();
+    state().currentAlbum = album;
+    state().currentSong = getFirstSongInAlbum(album);
+    const after = currentMusic();
+    justPlay();
+    writeState();
+    return { before: before, after: after };
+};
+
+const pickTrackAndPlay = function () {
+    const next = whatWillBeTheNextSong();
+    state().currentSong = next.song;
+    state().currentAlbum = next.album;
+    justPlay();
+};
+
+const justPlay = function () {
     player.playSong(state().currentSong.path, switchToNextSong);
 };
 
@@ -254,9 +296,8 @@ module.exports = {
     },
     readLibrary: readLibrary,
     getSongs: getSongs,
-    play: playSong,
-    getCurrentSong: function () {
-        return state().currentSong;
-    },
-    switchToNextSong: switchToNextSong
+    play: pickTrackAndPlay,
+    getCurrentSong: currentMusic,
+    switchToNextSong: switchToNextSong,
+    switchToNextAlbum: switchToNextAlbum,
 };
