@@ -80,6 +80,15 @@ const padToLength = function (aNumber, length) {
     return result;
 }
 
+const getUtcOffset = function () {
+    const rawOffsetMinutes = -1 * (new Date().getTimezoneOffset());
+    const hours = Math.floor(rawOffsetMinutes / 60);
+    const hoursString = (hours < 10 ? "0" : "") + hours;
+    const minutes = rawOffsetMinutes % 60;
+    const minutesString = (minutes < 10 ? "0" : "") + minutes;
+    return "UTC" + (rawOffsetMinutes >= 0 ? "+" : "") + hoursString + ":" + minutesString;
+};
+
 module.exports = {
     logGenerator: function (flagCallback, prefix) {
         return function () {
@@ -149,4 +158,6 @@ module.exports = {
         }
         return minutes + ":" + padToLength(seconds, 2);
     },
+
+    getUtcOffset: getUtcOffset,
 }

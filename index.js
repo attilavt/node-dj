@@ -75,7 +75,7 @@ const ru = function (fieldName) {
 
 app.get('/api/hour', function (req, res) {
     handleRequest(req);
-    res.send({ hour: tools.getHour() });
+    res.send({ hour: tools.getHour(), utc_offset: tools.getUtcOffset() });
 });
 
 app.get('/api/genre-names', function (req, res) {
@@ -104,15 +104,28 @@ app.get('/api/next-song', function (req, res) {
     res.send({ song: dj.pickNextSong() });
 });
 
+app.get('/api/current-song', function (req, res) {
+    handleRequest(req);
+    res.send({ song: dj.getCurrentSong() });
+});
+
 app.get('/api/songs', function (req, res) {
     handleRequest(req);
     res.send({ songs: dj.getSongs() });
 });
 
-app.put('/api/skip', function (req, res) {
+app.put('/api/skip-track', function (req, res) {
     handleRequest(req);
-    dj.switchToNextSong();
-    res.send({ "status": "Issuing request to switch to next song..." });
+    const currentMusic = dj.switchToNextSong();
+    currentMusic.status = "Issued request to switch to next track...";
+    res.send(currentMusic);
+});
+
+app.put('/api/skip-album', function (req, res) {
+    handleRequest(req);
+    const currentMusic = dj.switchToNextAlbum();
+    currentMusic.status = "Issued request to switch to next album...";
+    res.send(currentMusic);
 });
 
 ru('times');
