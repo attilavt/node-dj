@@ -128,6 +128,19 @@ app.put('/api/skip-album', function (req, res) {
     res.send(currentMusic);
 });
 
+app.put('/api/music-stop', function (req, res) {
+    handleRequest(req);
+    dj.stopMusic();
+    res.send({ status: "Issued request to stop music." });
+});
+
+app.put('/api/music-start', function (req, res) {
+    handleRequest(req);
+    const currentMusic = dj.play();
+    currentMusic.status = "Issued request to start music.";
+    res.send(currentMusic);
+});
+
 ru('times');
 ru('options');
 

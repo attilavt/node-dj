@@ -277,6 +277,21 @@ const pickTrackAndPlay = function () {
     justPlay();
 };
 
+const continueMusic = function () {
+    if (player.isPlaying()) {
+        throw "player is already playing!";
+    }
+    pickTrackAndPlay();
+    return currentMusic();
+};
+
+const stopMusic = function () {
+    if (!player.isPlaying()) {
+        throw "player is not playing!";
+    }
+    player.stopPlayback();
+};
+
 const justPlay = function () {
     player.playSong(state().currentSong.path, switchToNextSong);
 };
@@ -296,7 +311,8 @@ module.exports = {
     },
     readLibrary: readLibrary,
     getSongs: getSongs,
-    play: pickTrackAndPlay,
+    play: continueMusic,
+    stopMusic: stopMusic,
     getCurrentSong: currentMusic,
     switchToNextSong: switchToNextSong,
     switchToNextAlbum: switchToNextAlbum,
