@@ -154,7 +154,7 @@ module.exports = {
         const minutes = Math.round(seconds / 60);
         if (minutes >= 60) {
             const hours = Math.floor(minutes / 60);
-            return hours + ":" + padToLength(minutes % 60, 2) + ":" + padToLength(seconds, 2);
+            return hours + ":" + padToLength(minutes % 60, 2) + ":" + padToLength(seconds % 60, 2);
         }
         return minutes + ":" + padToLength(seconds, 2);
     },
