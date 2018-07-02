@@ -9,10 +9,17 @@ const logDebug = false;
 const log = tools.logGenerator(() => logLog, "player");
 const debug = tools.logGenerator(() => logDebug, "player");
 let speaker;
+let inputStream;
+let decoder;
 
 const playSong = function (path, callbackWhenDone) {
+    if (speaker) {
+        log("Stopping playback of old song...");
+        //inputStream.unpipe(speaker).unpipe(decoder);
+        speaker.close();
+    }
     log("playSong called with", path);
-    const decoder = new lame.Decoder;
+    decoder = new lame.Decoder;
 
     decoder.on('error', function (e) {
         log("decoder error", e);
@@ -21,7 +28,7 @@ const playSong = function (path, callbackWhenDone) {
     speaker = new Speaker(audioOptions);
     debug("Speaker initialized");
 
-    let inputStream = fs.createReadStream(path);
+    inputStream = fs.createReadStream(path);
     debug("Read stream created");
 
     const date1 = new Date().valueOf();
@@ -33,11 +40,14 @@ const playSong = function (path, callbackWhenDone) {
         const date3 = new Date().valueOf();
         log("finished playing", path, "after", tools.msToTime(date3 - date1));
         debug("speaker", speaker);
+        speaker = null;
+        inputstream = null;
+        decoder = null;
         callbackWhenDone();
     });
 
-    speaker.on('error', function (e) {
-        log("speaker error", e);
+    speaker.on('error', function (e, b) {
+        log("speaker error", e, b);
     });
 }
 module.exports = {

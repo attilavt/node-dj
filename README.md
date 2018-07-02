@@ -13,12 +13,9 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 ## Lifecycle
 * Pre-run actions like readState, readOptions
 * index.js->run() calls dj.js->play()
-* dj.js->play() sets currentSong and currentAlbum, calls player.start()
-* player.js->start() calls playSong, which instantiates a new Player and calls player.play()
-* player.js->Player->play() pipes the file inputstream into decoder and speaker
-* player.js->speaker sends 'flush' signal when done playing; event listener calls playNextSong()
-* player.js->playNextSong() calls dj.js->switchToNextSong()
-* dj.js->switchToNextSong() sets currentSong and currentAlbum, then calls player.start()
+* dj.js->play() sets currentSong and currentAlbum, calls player.playSong() with dj.switchToNextSong() as callback what to do when done playing
+* player.js->playSong closes the old speaker (if applicable), instantiates a new speaker and pipes data to it. when the new speaker is done playing, the callback dj.switchToNextSong() is carried out
+* dj.switchToNextSong() writes the last song into the history and calls playSong() (see above)
 
 # Setup
 ## Windows
