@@ -4,8 +4,8 @@ const app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 const port = 3001;
-const dj = require('./dj');
-const tools = require('./tools');
+const dj = require('./src/dj');
+const tools = require('./src/tools');
 
 let data = {
     options: {
