@@ -3,11 +3,16 @@ import logo from './logo.svg';
 import './App.css';
 import { connect } from 'react-redux';
 import { backendGetIpAddressesRequestAction } from './redux/backendMiddleware';
+import PropTypes from 'prop-types';
+import ControlButton from './common/ControlButton';
 
 class App extends Component {
 
-  baseUrl = "http://localhost:3001";
-  props = {};
+  static propTypes = {
+    ipAddresses: PropTypes.object
+  };
+
+  static baseUrl = "http://localhost:3001";
 
   componentDidMount() {
   }
@@ -16,7 +21,7 @@ class App extends Component {
     const addr = [];
     if (this.props.ipAddresses) {
       for (let a of Object.values(this.props.ipAddresses)) {
-        addr.push(a);
+        addr.push(<div key={a}>{a}</div>);
       }
     }
 
@@ -25,6 +30,15 @@ class App extends Component {
         addr
       }
     </div>;
+  }
+
+  renderButtons() {
+    const buttons = [];
+    const justLog = () => {
+      console.log("!");
+    };
+    buttons.push(<ControlButton label="Next" action={justLog} key="next" />);
+    return <div>{buttons}</div>
   }
 
   render() {
@@ -37,6 +51,7 @@ class App extends Component {
         {this.renderIpAddresses()}
         <p className="App-intro">
         </p>
+        {this.renderButtons()}
       </div>
     );
   }
