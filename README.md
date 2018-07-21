@@ -18,15 +18,15 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 * dj.switchToNextSong() writes the last song into the history and calls playSong() (see above)
 
 # Next features
-* restrict NO_ALBUM to x songs
-* add interface to control volume (https://github.com/jkeylu/node-mpg123-util)
-* Install script for raspberry pi
-* ?? add persistent metadata file (surviving library reload)
-* add option to disable autoplaying music on startup
-* allow running app without defining times
-* consider history when picking a new album
-* pick a certain song as next
-* pick a certain album as next
+* NDJ-0001: restrict NO_ALBUM to x songs
+* NDJ-0002: add interface to control volume (https://github.com/jkeylu/node-mpg123-util)
+* NDJ-0003: Install script for raspberry pi
+* NDJ-0004: ?? add persistent metadata file (surviving library reload)
+* NDJ-0005: add option to disable autoplaying music on startup
+* NDJ-0006: allow running app without defining times
+* NDJ-0007: consider history when picking a new album
+* NDJ-0008: pick a certain song as next
+* NDJ-0009: pick a certain album as next
 
 # Setup
 ## Windows
