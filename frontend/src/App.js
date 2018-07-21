@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { connect } from 'react-redux';
-import { backendGetIpAddressesRequestAction } from './redux/backendMiddleware';
+import { backendGetIpAddressesRequestAction, backendPutSkipToNextSongRequestAction } from './redux/backendMiddleware';
 import PropTypes from 'prop-types';
 import ControlButton from './common/ControlButton';
 
@@ -34,10 +34,7 @@ class App extends Component {
 
   renderButtons() {
     const buttons = [];
-    const justLog = () => {
-      console.log("!");
-    };
-    buttons.push(<ControlButton label="Next" action={justLog} key="next" />);
+    buttons.push(<ControlButton label="Next" action={putSkipToNextSong(this.props.dispatch)} key="next" />);
     return <div>{buttons}</div>
   }
 
@@ -56,6 +53,10 @@ class App extends Component {
     );
   }
 }
+
+const putSkipToNextSong = (dispatch) => () => {
+  dispatch(backendPutSkipToNextSongRequestAction);
+};
 
 let mapStateToPropsCounter = 0;
 const mapStateToProps = (state, props) => {
