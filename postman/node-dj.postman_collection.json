@@ -1,14 +1,13 @@
 {
 	"info": {
+		"_postman_id": "9c51a2e8-90da-43c8-8154-3f6c8b33bc16",
 		"name": "node-dj",
-		"_postman_id": "c18d312a-75d1-6e63-c1a7-070abf133719",
-		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "meta-information",
-			"description": "",
+			"description": null,
 			"item": [
 				{
 					"name": "GET times",
@@ -30,7 +29,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "localhost:3001/api/times",
 							"host": [
@@ -41,8 +43,7 @@
 								"api",
 								"times"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -70,8 +71,7 @@
 								"api",
 								"times"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -80,7 +80,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "localhost:3001/api/hour",
 							"host": [
@@ -91,8 +94,7 @@
 								"api",
 								"hour"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -101,7 +103,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "localhost:3001/api/genre-names",
 							"host": [
@@ -112,8 +117,7 @@
 								"api",
 								"genre-names"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -122,7 +126,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "localhost:3001/api/genre-name",
 							"host": [
@@ -133,8 +140,7 @@
 								"api",
 								"genre-name"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -143,7 +149,10 @@
 					"request": {
 						"method": "PUT",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "localhost:3001/api/library",
 							"host": [
@@ -154,8 +163,7 @@
 								"api",
 								"library"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -164,7 +172,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "localhost:3001/api/library",
 							"host": [
@@ -175,8 +186,7 @@
 								"api",
 								"library"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
@@ -185,7 +195,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "localhost:3001/api/songs",
 							"host": [
@@ -196,8 +209,53 @@
 								"api",
 								"songs"
 							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET current song",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
 						},
-						"description": ""
+						"url": {
+							"raw": "localhost:3001/api/current-song",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"current-song"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ip-addresses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:3001/api/ip-addresses",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"ip-addresses"
+							]
+						}
 					},
 					"response": []
 				}
@@ -205,14 +263,17 @@
 		},
 		{
 			"name": "commands",
-			"description": "",
+			"description": null,
 			"item": [
 				{
 					"name": "GET next song",
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "localhost:3001/api/next-song",
 							"host": [
@@ -223,29 +284,99 @@
 								"api",
 								"next-song"
 							]
-						},
-						"description": ""
+						}
 					},
 					"response": []
 				},
 				{
-					"name": "PUT skip to next",
+					"name": "PUT skip to next track",
 					"request": {
 						"method": "PUT",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
-							"raw": "localhost:3001/api/skip",
+							"raw": "localhost:3001/api/skip-track",
 							"host": [
 								"localhost"
 							],
 							"port": "3001",
 							"path": [
 								"api",
-								"skip"
+								"skip-track"
 							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT skip to next album",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
 						},
-						"description": ""
+						"url": {
+							"raw": "localhost:3001/api/skip-album",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"skip-album"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT stop music",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:3001/api/music-stop",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"music-stop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT start music",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:3001/api/music-start",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"music-start"
+							]
+						}
 					},
 					"response": []
 				}
@@ -256,7 +387,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "localhost:3001/api/health",
 					"host": [
@@ -267,8 +401,7 @@
 						"api",
 						"health"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		}

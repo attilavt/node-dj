@@ -145,6 +145,11 @@ app.put('/api/music-start', function (req, res) {
 ru('times');
 ru('options');
 
+app.get('/api/ip-addresses', function (req, res) {
+    handleRequest(req);
+    res.send(tools.getIpAddresses());
+});
+
 app.listen(port, function () {
     log("Listening on port", port);
     runPreconditions.serverRunnning = true;

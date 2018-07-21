@@ -19,10 +19,10 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 
 # Features
 * NDJ-0001: restrict NO_ALBUM to x songs
+* NDJ-0010: interface to get IP addresses
 
 # Next features
 (next index: NDJ-0011)
-* NDJ-0010: show IP address
 * NDJ-0002: add interface to control volume (https://github.com/jkeylu/node-mpg123-util)
 * NDJ-0003: Install script for raspberry pi
 * NDJ-0004: ?? add persistent metadata file (surviving library reload)
