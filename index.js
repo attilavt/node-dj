@@ -7,6 +7,13 @@ const port = 3001;
 const dj = require('./src/dj');
 const tools = require('./src/tools');
 
+// allow cors requests
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 let data = {
     options: {
         library_folder: ".",
@@ -148,13 +155,6 @@ ru('options');
 app.get('/api/ip-addresses', function (req, res) {
     handleRequest(req);
     res.send(tools.getIpAddresses());
-});
-
-// allow cors requests
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
 });
 
 app.listen(port, function () {
