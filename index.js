@@ -150,6 +150,13 @@ app.get('/api/ip-addresses', function (req, res) {
     res.send(tools.getIpAddresses());
 });
 
+// allow cors requests
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 app.listen(port, function () {
     log("Listening on port", port);
     runPreconditions.serverRunnning = true;
