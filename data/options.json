@@ -1,4 +1,5 @@
 {
     "folder_separator": "/",
-    "library_folder": "/home/attila/Music"
+    "library_folder": "/home/attila/Music/node-dj-long",
+    "no_album_max_track_count": 1
 }

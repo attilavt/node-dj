@@ -17,8 +17,12 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 * player.js->playSong closes the old speaker (if applicable), instantiates a new speaker and pipes data to it. when the new speaker is done playing, the callback dj.switchToNextSong() is carried out
 * dj.switchToNextSong() writes the last song into the history and calls playSong() (see above)
 
-# Next features
+# Features
 * NDJ-0001: restrict NO_ALBUM to x songs
+
+# Next features
+(next index: NDJ-0011)
+* NDJ-0010: show IP address
 * NDJ-0002: add interface to control volume (https://github.com/jkeylu/node-mpg123-util)
 * NDJ-0003: Install script for raspberry pi
 * NDJ-0004: ?? add persistent metadata file (surviving library reload)

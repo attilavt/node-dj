@@ -151,7 +151,13 @@ const pickNextAlbum = function () {
         debug("picked album?", album.name, "with", album.songs.length, "songs");
     } while (!album || album.songs.length === 0);
     if (album.name === NO_ALBUM) {
+        album = { ...album };
         tools.shuffle(album.songs);
+        const maxTrackCount = data.options.no_album_max_track_count;
+        if (maxTrackCount && album.songs.length > maxTrackCount) {
+            log("Reducing no_album copy's songs to just " + maxTrackCount);
+            album.songs = album.songs.slice(0, maxTrackCount);
+        }
     }
     log("picked album! ", album.name, "with", album.songs.length, "songs");
     return album;

@@ -10,7 +10,8 @@ const tools = require('./src/tools');
 let data = {
     options: {
         library_folder: ".",
-        folder_separator: "/"
+        folder_separator: "/",
+        no_album_max_track_count: 10
     }
 };
 
