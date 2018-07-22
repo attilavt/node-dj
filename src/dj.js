@@ -322,4 +322,5 @@ module.exports = {
     getCurrentSong: currentMusic,
     switchToNextSong: switchToNextSong,
     switchToNextAlbum: switchToNextAlbum,
+    musicIsPlaying: () => player.isPlaying(),
 };
