@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { connect } from 'react-redux';
-import { backendGetIpAddressesRequestAction, backendPutSkipToNextSongRequestAction, backendGetCurrentSongRequestAction } from './redux/backendMiddleware';
+import { backendGetIpAddressesRequestAction, backendPutSkipToNextSongRequestAction, backendGetCurrentSongRequestAction, backendPutSkipToNextAlbumRequestAction } from './redux/backendMiddleware';
 import PropTypes from 'prop-types';
 import ControlButton from './common/ControlButton';
 
@@ -39,7 +39,8 @@ class App extends Component {
 
   renderButtons() {
     const buttons = [];
-    buttons.push(<ControlButton label="Next" action={putSkipToNextSong(this.props.dispatch)} key="next" />);
+    buttons.push(<ControlButton label="Skip to next song" action={putSkipToNextSong(this.props.dispatch)} key="next-song" />);
+    buttons.push(<ControlButton label="Skip to next album" action={putSkipToNextAlbum(this.props.dispatch)} key="next-album" />);
     return <div>{buttons}</div>
   }
 
@@ -63,6 +64,10 @@ class App extends Component {
 
 const putSkipToNextSong = (dispatch) => () => {
   dispatch(backendPutSkipToNextSongRequestAction);
+};
+
+const putSkipToNextAlbum = (dispatch) => () => {
+  dispatch(backendPutSkipToNextAlbumRequestAction);
 };
 
 let mapStateToPropsCounter = 0;

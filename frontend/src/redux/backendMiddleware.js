@@ -1,11 +1,13 @@
 const BACKEND_GET_IP_ADDRESSES_REQUEST = "BACKEND_GET_IP_ADDRESSES_REQUEST";
 const BACKEND_GET_CURRENT_SONG_REQUEST = "BACKEND_GET_CURRENT_SONG_REQUEST";
 const BACKEND_PUT_SKIP_TO_NEXT_SONG = "BACKEND_PUT_SKIP_TO_NEXT_SONG";
+const BACKEND_PUT_SKIP_TO_NEXT_ALBUM = "BACKEND_PUT_SKIP_TO_NEXT_ALBUM";
 
 const request = (key, payload, callback) => { return { type: key, payload: { payload: payload, callback: callback } }; };
 
 export const backendGetIpAddressesRequestAction = request(BACKEND_GET_IP_ADDRESSES_REQUEST);
 export const backendPutSkipToNextSongRequestAction = request(BACKEND_PUT_SKIP_TO_NEXT_SONG);
+export const backendPutSkipToNextAlbumRequestAction = request(BACKEND_PUT_SKIP_TO_NEXT_ALBUM);
 export const backendGetCurrentSongRequestAction = request(BACKEND_GET_CURRENT_SONG_REQUEST);
 
 const baseUrl = "http://localhost:3001";
@@ -34,8 +36,9 @@ const putAndDo = (url, payload, callback) => {
     });
 };
 
-const logIt = (message) => (response) => {
+const logItAndReloadCurrentSong = (message, store) => (response) => {
     console.log(message, response);
+    store.dispatch(backendGetCurrentSongRequestAction);
 }
 
 export const asyncDispatchMiddleware = store => next => action => {
@@ -44,7 +47,10 @@ export const asyncDispatchMiddleware = store => next => action => {
             fetchAndWriteTo("/api/ip-addresses", "ipAddresses", action.type, store);
             break;
         case BACKEND_PUT_SKIP_TO_NEXT_SONG:
-            putAndDo("/api/skip-track", {}, logIt("PUT SKIP TO NEXT SONG SUCCESSFUL"))
+            putAndDo("/api/skip-track", {}, logItAndReloadCurrentSong("PUT SKIP TO NEXT SONG SUCCESSFUL", store))
+            break;
+        case BACKEND_PUT_SKIP_TO_NEXT_ALBUM:
+            putAndDo("/api/skip-album", {}, logItAndReloadCurrentSong("PUT SKIP TO NEXT ALBUM SUCCESSFUL", store))
             break;
         case BACKEND_GET_CURRENT_SONG_REQUEST:
             fetchAndWriteTo("/api/current-song", "currentSong", action.type, store);
