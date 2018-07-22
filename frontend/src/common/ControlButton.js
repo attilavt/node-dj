@@ -7,11 +7,15 @@ import PropTypes from 'prop-types';
 class ControlButton extends Component {
     static propTypes = {
         label: PropTypes.string.isRequired,
-        action: PropTypes.func.isRequired
+        action: PropTypes.func.isRequired,
+        isActive: PropTypes.bool.isRequired,
     }
 
     render() {
-        return <div onClick={this.props.action} className="control-button">{this.props.label}</div>
+        const justLog = () => {
+            console.log("Button is not active.");
+        }
+        return <div onClick={this.props.isActive ? this.props.action : justLog} className={`control-button ${this.props.isActive ? "" : "control-button-grey"}`}>{this.props.label}</div>
     }
 }
 

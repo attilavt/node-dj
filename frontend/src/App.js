@@ -9,7 +9,9 @@ import ControlButton from './common/ControlButton';
 class App extends Component {
 
   static propTypes = {
-    ipAddresses: PropTypes.object
+    ipAddresses: PropTypes.object,
+    currentSong: PropTypes.object,
+    isMusicPlaying: PropTypes.bool.isRequired,
   };
 
   static baseUrl = "http://localhost:3001";
@@ -18,7 +20,13 @@ class App extends Component {
   }
 
   renderCurrentSong() {
-    let song = this.props.currentSong ? this.props.currentSong.song.song + " ==> " + this.props.currentSong.song.album : "(no information received)";
+    let song = "(no information received)";
+    if (this.props.currentSong) {
+      song = this.props.currentSong.song.song + " ==> " + this.props.currentSong.song.album;
+      if (!this.props.isMusicPlaying) {
+        song = "(MUSIC STOPPED!) " + song;
+      }
+    }
     return <div>Current Song: {song}</div>;
   }
 
@@ -39,10 +47,10 @@ class App extends Component {
 
   renderButtons() {
     const buttons = [];
-    buttons.push(<ControlButton label="Skip to next song" action={putSkipToNextSong(this.props.dispatch)} key="next-song" />);
-    buttons.push(<ControlButton label="Skip to next album" action={putSkipToNextAlbum(this.props.dispatch)} key="next-album" />);
-    buttons.push(<ControlButton label="Stop music" action={putStopMusic(this.props.dispatch)} key="stop-music" />);
-    buttons.push(<ControlButton label="Start music" action={putStartMusic(this.props.dispatch)} key="start-music" />);
+    buttons.push(<ControlButton label="Skip to next song" action={putSkipToNextSong(this.props.dispatch)} isActive={this.props.isMusicPlaying} key="next-song" />);
+    buttons.push(<ControlButton label="Skip to next album" action={putSkipToNextAlbum(this.props.dispatch)} isActive={this.props.isMusicPlaying} key="next-album" />);
+    buttons.push(<ControlButton label="Stop music" action={putStopMusic(this.props.dispatch)} isActive={this.props.isMusicPlaying} key="stop-music" />);
+    buttons.push(<ControlButton label="Start music" action={putStartMusic(this.props.dispatch)} isActive={!this.props.isMusicPlaying} key="start-music" />);
     return <div>{buttons}</div>
   }
 
@@ -83,7 +91,8 @@ const putStartMusic = (dispatch) => () => {
 let mapStateToPropsCounter = 0;
 const mapStateToProps = (state, props) => {
   mapStateToPropsCounter++;
-  const newProps = { ipAddresses: state.global.ipAddresses, currentSong: state.global.currentSong };
+  const isPlaying = state.global.currentSong ? state.global.currentSong.song.isPlaying : false;
+  const newProps = { ipAddresses: state.global.ipAddresses, currentSong: state.global.currentSong, isMusicPlaying: isPlaying };
   console.log("mapStateToProps", mapStateToPropsCounter, newProps);
   return newProps;
 }

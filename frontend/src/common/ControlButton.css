@@ -6,3 +6,9 @@
     cursor: pointer;
     background: yellow;
 }
+
+.control-button-grey {
+    border: 1px solid darkgrey;
+    background: lightgrey;
+    color: darkgrey;
+}
