@@ -4,6 +4,7 @@ const BACKEND_PUT_SKIP_TO_NEXT_SONG = "BACKEND_PUT_SKIP_TO_NEXT_SONG";
 const BACKEND_PUT_SKIP_TO_NEXT_ALBUM = "BACKEND_PUT_SKIP_TO_NEXT_ALBUM";
 const BACKEND_PUT_STOP_MUSIC = "BACKEND_PUT_STOP_MUSIC";
 const BACKEND_PUT_START_MUSIC = "BACKEND_PUT_START_MUSIC";
+const BACKEND_PUT_RELOAD_LIBRARY = "BACKEND_PUT_RELOAD_LIBRARY";
 
 const request = (key, payload, callback) => { return { type: key, payload: { payload: payload, callback: callback } }; };
 
@@ -12,10 +13,11 @@ export const backendPutSkipToNextSongRequestAction = request(BACKEND_PUT_SKIP_TO
 export const backendPutSkipToNextAlbumRequestAction = request(BACKEND_PUT_SKIP_TO_NEXT_ALBUM);
 export const backendPutStopMusicRequestAction = request(BACKEND_PUT_STOP_MUSIC);
 export const backendPutStartMusicRequestAction = request(BACKEND_PUT_START_MUSIC);
+export const backendPutReloadLibraryRequestAction = request(BACKEND_PUT_RELOAD_LIBRARY);
 export const backendGetCurrentSongRequestAction = request(BACKEND_GET_CURRENT_SONG_REQUEST);
 
 // workaround since _not_ loading from .env.local when doing `npm run build` does not seem to work
-const baseUrl = (process.env.NODE_ENV === "development") ? "" : process.env.REACT_APP_BACKEND_BASE_PATH;
+const baseUrl = (process.env.NODE_ENV === "production") ? "" : process.env.REACT_APP_BACKEND_BASE_PATH;
 console.log("Backend Base Url: ", baseUrl, process.env.NODE_ENV);
 
 const fetchAndWriteTo = (url, dataFieldKey, requestActionKey, store) => {
@@ -63,6 +65,9 @@ export const asyncDispatchMiddleware = store => next => action => {
             break;
         case BACKEND_PUT_START_MUSIC:
             putAndDo("/api/music-start", {}, logItAndReloadCurrentSong(action.type, store))
+            break;
+        case BACKEND_PUT_RELOAD_LIBRARY:
+            putAndDo("/api/library", {}, logItAndReloadCurrentSong(action.type, store))
             break;
         case BACKEND_GET_CURRENT_SONG_REQUEST:
             fetchAndWriteTo("/api/current-song", "currentSong", action.type, store);

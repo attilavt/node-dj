@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { connect } from 'react-redux';
-import { backendGetIpAddressesRequestAction, backendPutSkipToNextSongRequestAction, backendGetCurrentSongRequestAction, backendPutSkipToNextAlbumRequestAction, backendPutStopMusicRequestAction, backendPutStartMusicRequestAction } from './redux/backendMiddleware';
+import { backendGetIpAddressesRequestAction, backendPutSkipToNextSongRequestAction, backendGetCurrentSongRequestAction, backendPutSkipToNextAlbumRequestAction, backendPutStopMusicRequestAction, backendPutStartMusicRequestAction, backendPutReloadLibraryRequestAction } from './redux/backendMiddleware';
 import PropTypes from 'prop-types';
 import ControlButton from './common/ControlButton';
 
@@ -13,8 +13,6 @@ class App extends Component {
     currentSong: PropTypes.object,
     isMusicPlaying: PropTypes.bool.isRequired,
   };
-
-  static baseUrl = "http://localhost:3001";
 
   componentDidMount() {
   }
@@ -51,6 +49,7 @@ class App extends Component {
     buttons.push(<ControlButton label="Skip to next album" action={putSkipToNextAlbum(this.props.dispatch)} isActive={this.props.isMusicPlaying} key="next-album" />);
     buttons.push(<ControlButton label="Stop music" action={putStopMusic(this.props.dispatch)} isActive={this.props.isMusicPlaying} key="stop-music" />);
     buttons.push(<ControlButton label="Start music" action={putStartMusic(this.props.dispatch)} isActive={!this.props.isMusicPlaying} key="start-music" />);
+    buttons.push(<ControlButton label="Reload library" action={putReloadLibrary(this.props.dispatch)} isActive={true} key="reload-library" />);
     return <div>{buttons}</div>
   }
 
@@ -86,6 +85,10 @@ const putStopMusic = (dispatch) => () => {
 
 const putStartMusic = (dispatch) => () => {
   dispatch(backendPutStartMusicRequestAction);
+};
+
+const putReloadLibrary = (dispatch) => () => {
+  dispatch(backendPutReloadLibraryRequestAction);
 };
 
 let mapStateToPropsCounter = 0;
