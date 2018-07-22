@@ -14,7 +14,9 @@ export const backendPutStopMusicRequestAction = request(BACKEND_PUT_STOP_MUSIC);
 export const backendPutStartMusicRequestAction = request(BACKEND_PUT_START_MUSIC);
 export const backendGetCurrentSongRequestAction = request(BACKEND_GET_CURRENT_SONG_REQUEST);
 
-const baseUrl = "http://localhost:3001";
+// workaround since _not_ loading from .env.local when doing `npm run build` does not seem to work
+const baseUrl = (process.env.NODE_ENV === "development") ? "" : process.env.REACT_APP_BACKEND_BASE_PATH;
+console.log("Backend Base Url: ", baseUrl, process.env.NODE_ENV);
 
 const fetchAndWriteTo = (url, dataFieldKey, requestActionKey, store) => {
     const reqUrl = baseUrl + url;

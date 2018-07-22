@@ -6,6 +6,7 @@ app.use(bodyParser.json());
 const port = 3001;
 const dj = require('./src/dj');
 const tools = require('./src/tools');
+const path = require('path');
 
 // allow cors requests
 app.use(function (req, res, next) {
@@ -51,6 +52,8 @@ const run = function () {
 
     dj.play();
 };
+
+app.use(express.static(path.join(__dirname, "frontend", "build")));
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/api/health', function (req, res) {
