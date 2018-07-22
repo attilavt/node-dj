@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { connect } from 'react-redux';
-import { backendGetIpAddressesRequestAction, backendPutSkipToNextSongRequestAction, backendGetCurrentSongRequestAction, backendPutSkipToNextAlbumRequestAction, backendPutStopMusicRequestAction } from './redux/backendMiddleware';
+import { backendGetIpAddressesRequestAction, backendPutSkipToNextSongRequestAction, backendGetCurrentSongRequestAction, backendPutSkipToNextAlbumRequestAction, backendPutStopMusicRequestAction, backendPutStartMusicRequestAction } from './redux/backendMiddleware';
 import PropTypes from 'prop-types';
 import ControlButton from './common/ControlButton';
 
@@ -42,6 +42,7 @@ class App extends Component {
     buttons.push(<ControlButton label="Skip to next song" action={putSkipToNextSong(this.props.dispatch)} key="next-song" />);
     buttons.push(<ControlButton label="Skip to next album" action={putSkipToNextAlbum(this.props.dispatch)} key="next-album" />);
     buttons.push(<ControlButton label="Stop music" action={putStopMusic(this.props.dispatch)} key="stop-music" />);
+    buttons.push(<ControlButton label="Start music" action={putStartMusic(this.props.dispatch)} key="start-music" />);
     return <div>{buttons}</div>
   }
 
@@ -73,6 +74,10 @@ const putSkipToNextAlbum = (dispatch) => () => {
 
 const putStopMusic = (dispatch) => () => {
   dispatch(backendPutStopMusicRequestAction);
+};
+
+const putStartMusic = (dispatch) => () => {
+  dispatch(backendPutStartMusicRequestAction);
 };
 
 let mapStateToPropsCounter = 0;
