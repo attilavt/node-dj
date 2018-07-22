@@ -1,10 +1,12 @@
 const BACKEND_GET_IP_ADDRESSES_REQUEST = "BACKEND_GET_IP_ADDRESSES_REQUEST";
+const BACKEND_GET_CURRENT_SONG_REQUEST = "BACKEND_GET_CURRENT_SONG_REQUEST";
 const BACKEND_PUT_SKIP_TO_NEXT_SONG = "BACKEND_PUT_SKIP_TO_NEXT_SONG";
 
 const request = (key, payload, callback) => { return { type: key, payload: { payload: payload, callback: callback } }; };
 
 export const backendGetIpAddressesRequestAction = request(BACKEND_GET_IP_ADDRESSES_REQUEST);
 export const backendPutSkipToNextSongRequestAction = request(BACKEND_PUT_SKIP_TO_NEXT_SONG);
+export const backendGetCurrentSongRequestAction = request(BACKEND_GET_CURRENT_SONG_REQUEST);
 
 const baseUrl = "http://localhost:3001";
 
@@ -39,10 +41,13 @@ const logIt = (message) => (response) => {
 export const asyncDispatchMiddleware = store => next => action => {
     switch (action.type) {
         case BACKEND_GET_IP_ADDRESSES_REQUEST:
-            fetchAndWriteTo("/api/ip-addresses", "ipAddresses", BACKEND_GET_IP_ADDRESSES_REQUEST, store);
+            fetchAndWriteTo("/api/ip-addresses", "ipAddresses", action.type, store);
             break;
         case BACKEND_PUT_SKIP_TO_NEXT_SONG:
             putAndDo("/api/skip-track", {}, logIt("PUT SKIP TO NEXT SONG SUCCESSFUL"))
+            break;
+        case BACKEND_GET_CURRENT_SONG_REQUEST:
+            fetchAndWriteTo("/api/current-song", "currentSong", action.type, store);
             break;
         default:
         // console.warn("No action found in asyncDispatchMiddleware for " + action.type);

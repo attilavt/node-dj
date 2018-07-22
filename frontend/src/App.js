@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { connect } from 'react-redux';
-import { backendGetIpAddressesRequestAction, backendPutSkipToNextSongRequestAction } from './redux/backendMiddleware';
+import { backendGetIpAddressesRequestAction, backendPutSkipToNextSongRequestAction, backendGetCurrentSongRequestAction } from './redux/backendMiddleware';
 import PropTypes from 'prop-types';
 import ControlButton from './common/ControlButton';
 
@@ -15,6 +15,11 @@ class App extends Component {
   static baseUrl = "http://localhost:3001";
 
   componentDidMount() {
+  }
+
+  renderCurrentSong() {
+    let song = this.props.currentSong ? this.props.currentSong.song.song + " ==> " + this.props.currentSong.song.album : "(no information received)";
+    return <div>Current Song: {song}</div>;
   }
 
   renderIpAddresses() {
@@ -46,6 +51,8 @@ class App extends Component {
           <h1 className="App-title">node-dj control</h1>
         </header>
         {this.renderIpAddresses()}
+        <hr />
+        {this.renderCurrentSong()}
         <p className="App-intro">
         </p>
         {this.renderButtons()}
@@ -61,12 +68,14 @@ const putSkipToNextSong = (dispatch) => () => {
 let mapStateToPropsCounter = 0;
 const mapStateToProps = (state, props) => {
   mapStateToPropsCounter++;
-  console.log("mapStateToProps", mapStateToPropsCounter);
-  return { ipAddresses: state.global.ipAddresses };
+  const newProps = { ipAddresses: state.global.ipAddresses, currentSong: state.global.currentSong };
+  console.log("mapStateToProps", mapStateToPropsCounter, newProps);
+  return newProps;
 }
 
 const mapDispatchToProps = dispatch => {
   dispatch(backendGetIpAddressesRequestAction);
+  dispatch(backendGetCurrentSongRequestAction);
   return { dispatch: dispatch };
 }
 

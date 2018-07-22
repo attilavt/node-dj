@@ -6,7 +6,7 @@ export const rootReducer = (state = initialState, action) => {
     let touched = false;
     const applyToGlobalState = (key, value) => {
         touched = true;
-        newState[key] = value;
+        newState.global[key] = value;
     };
 
     if (action.type.indexOf("RESPONSE") === action.type.length - 8) {
