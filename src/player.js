@@ -55,8 +55,7 @@ const playSong = function (path, callbackWhenDone) {
     });
 
     speaker.on('error', function (e, b) {
-        log("speaker error", e, b);
-        isPlaying = false;
+        log("speaker error for " + path, e, b);
     });
 }
 module.exports = {
