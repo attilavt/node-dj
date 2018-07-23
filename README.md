@@ -24,7 +24,8 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 * NDJ-0003: Install script for raspberry pi
 
 # Next features
-(next index: NDJ-0014)
+(next index: NDJ-0015)
+* NDJ-0014: read times.json from library folder
 * NDJ-0012: show last 10 songs
 * NDJ-0013: refresh curent song automatically
 * NDJ-0002: add interface to control volume (https://github.com/jkeylu/node-mpg123-util)

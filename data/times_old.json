@@ -1,0 +1,63 @@
+{
+    "time_slots": [
+        {
+            "start": 6,
+            "end": 9,
+            "genre_names": [
+                "Oldies Heap"
+            ]
+        },
+        {
+            "start": 9,
+            "end": 11,
+            "genre_names": [
+                "Reggae Heap"
+            ]
+        },
+        {
+            "start": 11,
+            "end": 14,
+            "genre_names": [
+                "Ska Heap",
+                "Synthwave Heap"
+            ]
+        },
+        {
+            "start": 14,
+            "end": 18,
+            "genre_names": [
+                "Hip Hop Heap",
+                "Mainstream Heap",
+                "Reggae Heap"
+            ]
+        },
+        {
+            "start": 18,
+            "end": 21,
+            "genre_names": [
+                "French Heap",
+                "Oldies Heap",
+                "Turkish Heap"
+            ]
+        },
+        {
+            "start": 21,
+            "end": 23,
+            "genre_names": [
+                "Indie HQ Heap",
+                "TurkPop Heap",
+                "World Heap"
+            ]
+        },
+        {
+            "start": 23,
+            "end": 6,
+            "genre_names": [
+                "Dubstep Heap",
+                "Electronic HQ Heap",
+                "Meme Heap",
+                "Trap Heap"
+            ]
+        }
+    ]
+}
