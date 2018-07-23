@@ -45,5 +45,6 @@ Press windows key -> enter "Powershell" -> right click and choose "Run as admini
 `npm install --global --production windows-build-tools`
 
 ## Linux (ubuntu)
+(if you are running node-dj on a raspberry pi, don't forget to set the audio output with `sudo raspi-config`)
 For developing and running on linux, the following command must first be run:
 `sudo apt-get install -y libasound2-dev make gcc g++`
