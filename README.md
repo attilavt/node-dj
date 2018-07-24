@@ -48,3 +48,7 @@ Press windows key -> enter "Powershell" -> right click and choose "Run as admini
 (if you are running node-dj on a raspberry pi, don't forget to set the audio output with `sudo raspi-config`)
 For developing and running on linux, the following command must first be run:
 `sudo apt-get install -y libasound2-dev make gcc g++`
+For making sure that node-dj is run at each startup, I recommend using the following command:
+`crontab -e`
+and entering the following line:
+`@reboot /path/to/script` where the script should contain switching to the node-dj folder and running the `run.sh` script
