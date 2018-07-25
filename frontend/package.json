@@ -12,6 +12,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "postbuild": "bash provide_git_status.sh",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
