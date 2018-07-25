@@ -108,7 +108,7 @@ const ru = function (fieldName) {
         if (req.body === undefined || typeof req.body !== "object" || Object.keys(req.body).length <= 0) {
             throwError(res, 400, 'error');
         }
-        log(`PUT /api/${fieldName} to ${safeStringify(req.body)}`);
+        log(`PUT /api/${fieldName} to ${tools.safeStringify(req.body)}`);
         data[fieldName] = req.body;
         res.send('OK');
     });
@@ -190,6 +190,11 @@ ru('options');
 app.get('/api/ip-addresses', function (req, res) {
     handleRequest(req);
     res.send(tools.getIpAddresses());
+});
+
+app.get('/api/log-file-names', function (req, res) {
+    handleRequest(req);
+    res.send(tools.getLogFileNames());
 });
 
 app.listen(port, function () {

@@ -10,6 +10,32 @@ const logFileName = `log/log-${date()}.txt`;
 fs.writeFileSync(logFileName, "");
 let fullLog = "";
 let logToWrite = [];
+let logFileNames = [];
+
+const logSomeWhere = function (prefix, args) {
+    let toLog = "[" + prefix + "] ";
+    for (let arg of args) {
+        if (typeof arg === "object") {
+            toLog += safeStringify(arg) + " ";
+        } else {
+            toLog += arg + " ";
+        }
+    }
+    toLog = `${new Date().toISOString()} ${toLog}`;
+    console.log(toLog);
+    logToWrite.push(toLog);
+};
+
+const log = function () {
+    logSomeWhere("tools", arguments);
+};
+
+fs.readdir('./log/', (err, files) => {
+    files.forEach(file => {
+        logFileNames.push(file);
+    });
+    log("Done reading log file names.");
+})
 
 setInterval(() => {
     for (let line of logToWrite) {
@@ -42,24 +68,6 @@ const safeStringify = function (obj) {
         return JSON.stringify(obj, replacer);
 
     }
-};
-
-const logSomeWhere = function (prefix, args) {
-    let toLog = "[" + prefix + "] ";
-    for (let arg of args) {
-        if (typeof arg === "object") {
-            toLog += safeStringify(arg) + " ";
-        } else {
-            toLog += arg + " ";
-        }
-    }
-    toLog = `${new Date().toISOString()} ${toLog}`;
-    console.log(toLog);
-    logToWrite.push(toLog);
-};
-
-const log = function () {
-    logSomeWhere("tools", arguments);
 };
 
 /**
@@ -192,4 +200,6 @@ module.exports = {
 
         return result;
     },
+
+    getLogFileNames: () => logFileNames,
 }

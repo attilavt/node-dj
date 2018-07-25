@@ -29,9 +29,10 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 
 # Next tasks
 (next index: NDJ-0019)
+* NDJ-0019: serve logs via web
 * NDJ-0012: show last 10 songs
 * NDJ-0013: refresh current song automatically
-* NDJ-0018: refactor to allow for unit tests
+* NDJ-0018: refactor to allow for unit tests & write docu
 * NDJ-0002: add interface to control volume (https://github.com/jkeylu/node-mpg123-util)
 * NDJ-0004: ?? add persistent metadata file (surviving library reload)
 * NDJ-0005: add option to disable autoplaying music on startup
