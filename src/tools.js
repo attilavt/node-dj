@@ -99,12 +99,12 @@ module.exports = {
             }
         };
     },
-    readFile: function (data, fieldName, callback, throwIfError) {
-        log("Starting reading file", fieldName);
-        fs.readFile('data/' + fieldName + '.json', function (err, readData) {
-            log("Done reading file", fieldName);
+    readFile: function (data, fieldName, fileName, callback, throwIfError) {
+        log("Starting reading file", fileName);
+        fs.readFile(fileName, function (err, readData) {
+            log("Done reading file", fileName);
             if (err) {
-                const msg = "Error when reading file " + fieldName + ":" + safeStringify(err);
+                const msg = "Error when reading file " + fileName + ":" + safeStringify(err);
                 if (throwIfError) {
                     throw msg;
                 } else {
@@ -114,7 +114,7 @@ module.exports = {
                 try {
                     data[fieldName] = JSON.parse(readData);
                 } catch (err2) {
-                    const msg2 = "Error when parsing file " + fieldName + ":" + safeStringify(err2);
+                    const msg2 = "Error when parsing file " + fileName + ":" + safeStringify(err2);
                     if (throwIfError) {
                         throw msg2;
                     } else {

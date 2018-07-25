@@ -198,15 +198,14 @@ app.listen(port, function () {
     run();
 });
 
-const readFile = function (fieldName, optionalCallback) {
+const readTimesFile = function () {
+    const fieldName = "times";
     const callback = function () {
         runPreconditions[fieldName + 'Read'] = true;
-        if (optionalCallback) {
-            optionalCallback();
-        }
         run();
     };
-    tools.readFile(data, fieldName, callback, false);
+    const timesFileName = data.options.library_folder + data.options.folder_separator + "times.json";
+    tools.readFile(data, fieldName, timesFileName, callback, false);
 };
 
 dj.setData(data, () => {
@@ -217,4 +216,4 @@ dj.setData(data, () => {
     run();
 });
 
-readFile('times');
+readTimesFile();

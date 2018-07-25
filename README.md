@@ -25,10 +25,10 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 * NDJ-0016: instead of picking genre first and album second, pick from all albums with qualified genre
 * NDJ-0017: make hash of current git commit accessible via web request
 * NDJ-0015: read options.json from command line
+* NDJ-0014: read times.json from library folder
 
 # Next tasks
 (next index: NDJ-0019)
-* NDJ-0014: read times.json from library folder
 * NDJ-0012: show last 10 songs
 * NDJ-0013: refresh current song automatically
 * NDJ-0018: refactor to allow for unit tests
