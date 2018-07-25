@@ -8,6 +8,43 @@ const dj = require('./src/dj');
 const tools = require('./src/tools');
 const path = require('path');
 
+const debug = true;
+const log = tools.logGenerator(() => debug, "index");
+
+// process command line arguments
+const readOptionsFromCommandLine = () => {
+    let clFolderSeparator;
+    let clLibraryFolder;
+    let clAlbumlessMaxTrackCount;
+    const nodeArgOffset = 2;
+    try {
+        clFolderSeparator = process.argv[0 + nodeArgOffset];
+        clLibraryFolder = process.argv[1 + nodeArgOffset];
+        clAlbumlessMaxTrackCount = process.argv[2 + nodeArgOffset];
+    } catch (err) {
+        // do nothing
+    }
+    if (!clFolderSeparator) {
+        clFolderSeparator = "/";
+        log(`Folder separator not provided as command line argument #0! Using default '${clFolderSeparator}'...`);
+    }
+    if (!clLibraryFolder) {
+        clLibraryFolder = "./music";
+        log(`Library folder not provided as command line argument #1! Using default '${clLibraryFolder}'...`);
+    }
+    if (!clAlbumlessMaxTrackCount) {
+        clAlbumlessMaxTrackCount = 7;
+        log(`Max track count for NO_ALBUM not provided as command line argument #2! Using default '${clAlbumlessMaxTrackCount}'...`);
+    }
+    const result = {
+        library_folder: clLibraryFolder,
+        folder_separator: clFolderSeparator,
+        no_album_max_track_count: clAlbumlessMaxTrackCount
+    };
+    log("Starting node-dj with the following options: ", result);
+    return result;
+};
+
 // allow cors requests
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -17,23 +54,15 @@ app.use(function (req, res, next) {
 });
 
 let data = {
-    options: {
-        library_folder: ".",
-        folder_separator: "/",
-        no_album_max_track_count: 10
-    }
+    options: readOptionsFromCommandLine()
 };
 
 const runPreconditions = {
-    optionsRead: false,
     timesRead: false,
     serverRunnning: false,
     libraryInitialized: false,
     djStateInitialized: false,
 };
-
-const debug = true;
-const log = tools.logGenerator(() => debug, "index");
 
 const run = function () {
     let unready = [];
@@ -180,13 +209,12 @@ const readFile = function (fieldName, optionalCallback) {
     tools.readFile(data, fieldName, callback, false);
 };
 
-readFile('options', () => {
-    dj.setData(data, () => {
-        runPreconditions.libraryInitialized = true;
-        run();
-    }, () => {
-        runPreconditions.djStateInitialized = true;
-        run();
-    });
+dj.setData(data, () => {
+    runPreconditions.libraryInitialized = true;
+    run();
+}, () => {
+    runPreconditions.djStateInitialized = true;
+    run();
 });
+
 readFile('times');

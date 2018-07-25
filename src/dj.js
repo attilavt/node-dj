@@ -319,8 +319,7 @@ module.exports = {
     setData: function (dataFromIndexJs, callbackLibrary, callbackState) {
         data = dataFromIndexJs;
         callbackWhenLibraryRead = callbackLibrary;
-        readLibrary();
-        tools.readFile(stateHolder, 'state', () => { callbackState(); }, false);
+        tools.readFile(stateHolder, 'state', () => { readLibrary(); callbackState(); }, false);
     },
     pickNextSong: whatWillBeTheNextSong,
     getLibrary: function () {
