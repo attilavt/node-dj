@@ -7,7 +7,9 @@ const fs = require('fs');
 const player = require('./player');
 
 const writeState = function () {
-    tools.writeFile('data/state.json', JSON.stringify(state()));
+    const stateCopy = { ...state() };
+    stateCopy.library = null;
+    tools.writeFile('data/state.json', JSON.stringify(stateCopy));
 };
 
 let stateHolder = {
@@ -140,15 +142,24 @@ const isLastSongOfAlbum = function (album, songFileName) {
 
 const pickNextAlbum = function () {
     log("picking next album...");
-    const genre = pickOne(getGenreNames());
-    log("picked genre ", genre);
-    if (Object.keys(stateHolder.state.library).indexOf(genre) < 0) {
-        throw "Genre " + genre + " picked from times.json has no entry in library!";
+    const genres = getGenreNames();
+    let albums = [];
+    for (let genre of genres) {
+        if (Object.keys(stateHolder.state.library).indexOf(genre) < 0) {
+            log("Genre " + genre + " picked from times.json has no entry in library!");
+        }
+        else {
+            const genreObject = stateHolder.state.library[genre];
+            const genreAlbumNames = Object.keys(genreObject);
+            for (let genreAlbumName of genreAlbumNames) {
+                albums.push(genreObject[genreAlbumName]);
+            }
+        }
     }
     let album;
     do {
-        album = pickOneFromObject(stateHolder.state.library[genre]);
-        debug("picked album?", album.name, "with", album.songs.length, "songs");
+        album = pickOne(albums);
+        debug("preliminarily picked album", album.name, "with", album.songs.length, "songs. Will be checked...");
     } while (!album || album.songs.length === 0);
     if (album.name === NO_ALBUM) {
         album = { ...album };

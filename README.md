@@ -22,10 +22,10 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 * NDJ-0010: interface to get IP addresses
 * NDJ-0011: set up controller frontend
 * NDJ-0003: Install script for raspberry pi
+* NDJ-0016: instead of picking genre first and album second, pick from all albums with qualified genre
 
 # Next features
 (next index: NDJ-0018)
-* NDJ-0016: instead of picking genre first and album second, pick from all albums with qualified genre
 * NDJ-0017: make hash of current git commit accessible via web request
 * NDJ-0015: read options.json from command line
 * NDJ-0014: read times.json from library folder
