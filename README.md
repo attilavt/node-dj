@@ -1,14 +1,18 @@
 # node-dj
-node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined time slots.
+node-dj is a parametrizable mp3 jukebox that automatically plays mp3s, choosing music based on pre-defined time slot - genre folder combinations.
+> "You have bought a fiddle. But have you also bought the man who can play the fiddle?"
+_Teacher to his pupil, ca. 1937_
+
+
 ## Required parameters:
 * options.json -> library_path: The folder where the mp3 files are to be found.
 * options.json -> folder_separator: The symbol separating folders, e.g. `\\` for windows systems or `/` for mac/unix systems
 * times.json -> time_slots: Object representing a time slot in which to define which genres are applicable for the respective time
 
 ## Expected folder structure:
-* Genre folder: library/<genre>
-* Songs without album: library/<genre>/<filename>.mp3
-* Songs within album: library/<genre>/<albumname>/<filename>.mp3
+* Genre folder: `library/<genre>`
+* Songs without album: `library/<genre>/<filename>.mp3`
+* Songs within album: `library/<genre>/<albumname>/<filename>.mp3`
 
 ## Lifecycle
 * Pre-run actions like readState, readOptions
@@ -26,10 +30,10 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 * NDJ-0017: make hash of current git commit accessible via web request
 * NDJ-0015: read options.json from command line
 * NDJ-0014: read times.json from library folder
+* NDJ-0020: serve library and times statistics
 
 # Next tasks
 (next index: NDJ-0021)
-* NDJ-0020: serve library and times statistics
 * NDJ-0019: serve logs via web
 * NDJ-0012: show last 10 songs
 * NDJ-0013: refresh current song automatically
@@ -45,17 +49,17 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 # Setup
 ## Windows
 For developing and running on windows, the following command must first be run as administrator:
+
 Press windows key -> enter "Powershell" -> right click and choose "Run as administrator" -> enter command
 `npm install --global --production windows-build-tools`
 
 ## Linux (ubuntu)
-(if you are running node-dj on a raspberry pi, don't forget to set the audio output with `sudo raspi-config`)
-For developing and running on linux, the following command must first be run:
+* For developing and running on linux, the following command must first be run:
 `sudo apt-get install -y libasound2-dev make gcc g++`
-For making sure that node-dj is run at each startup, I recommend using the following command:
+* For making sure that node-dj is run at each startup, I recommend using the following command:
 `crontab -e`
 and entering the following line:
-`@reboot /path/to/script` where the script should contain switching to the node-dj folder and running the `run.sh` script
-To make sure that the ssh daemon is run on boot, issue the following command: `sudo systemctl enable sshd.service`.
-To set the correct time zone, issue the following command: `sudo timedatectl set-timezone "Europe/Istanbul"`
-
+`@reboot /path/to/script` (where the script should contain switching to the node-dj folder and running the `run.sh` script)
+* To make sure that the ssh daemon is run on boot, issue the following command: `sudo systemctl enable sshd.service`.
+* To set the correct time zone, issue the following command: `sudo timedatectl set-timezone "Europe/Istanbul"`
+* if you are running node-dj on a raspberry pi, don't forget to set the audio output with `sudo raspi-config`
