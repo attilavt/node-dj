@@ -55,3 +55,6 @@ For making sure that node-dj is run at each startup, I recommend using the follo
 `crontab -e`
 and entering the following line:
 `@reboot /path/to/script` where the script should contain switching to the node-dj folder and running the `run.sh` script
+To make sure that the ssh daemon is run on boot, issue the following command: `sudo systemctl enable sshd.service`.
+To set the correct time zone, issue the following command: `sudo timedatectl set-timezone "Europe/Istanbul"`
+
