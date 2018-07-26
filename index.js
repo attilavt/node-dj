@@ -197,6 +197,11 @@ app.get('/api/log-file-names', function (req, res) {
     res.send(tools.getLogFileNames());
 });
 
+app.get('/api/library-stats', function (req, res) {
+    handleRequest(req);
+    res.send(dj.libraryStats());
+});
+
 app.listen(port, function () {
     log("Listening on port", port);
     runPreconditions.serverRunnning = true;

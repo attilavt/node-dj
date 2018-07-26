@@ -202,4 +202,10 @@ module.exports = {
     },
 
     getLogFileNames: () => logFileNames,
+    endsWith: (haystack, needle) => {
+        const lh = haystack.length;
+        const ln = needle.length;
+        const end = haystack.substring(lh - ln);
+        return end === needle;
+    }
 }

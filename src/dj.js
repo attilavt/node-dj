@@ -83,6 +83,11 @@ const readLibrary = function () {
             log("error when reading library root", err);
         } else {
             for (let genreFolderName of rootFiles) {
+                if (!fs.lstatSync(lib + data.options.folder_separator + genreFolderName).isDirectory()) {
+                    log("skipping", genreFolderName, "since it is not a directory");
+                    continue;
+                }
+
                 const genreFolderPath = buildPath(genreFolderName);
                 const genreObj = {};
                 if (fs.statSync(genreFolderPath).isDirectory()) {
@@ -313,6 +318,53 @@ const justPlay = function () {
     player.playSong(state().currentSong.path, switchToNextSong);
 };
 
+const readSizeRecursive = (item) => {
+    const stats = fs.lstatSync(item);
+    let totalMb = (stats.size / (1024 * 1024));
+    if (stats.isDirectory()) {
+        const list = fs.readdirSync(item);
+        for (let diritem of list) {
+            const size = readSizeRecursive(item + data.options.folder_separator + diritem);
+            totalMb += size;
+        }
+        log("file size of FOLDER " + item, totalMb, "MB");
+    } else {
+        if (!tools.endsWith(item, ".mp3")) {
+            return 0;
+        }
+        log("file size of FILE " + item, totalMb, "MB");
+    }
+    return Math.floor(totalMb * 100) / 100;
+}
+
+const computeGenreFileSize = (genreName) => {
+    return readSizeRecursive(data.options.library_folder + data.options.folder_separator + genreName) + " MB";
+};
+
+const libraryStats = () => {
+    const library = { ...state().library };
+    const result = {
+        genres: {}
+    };
+    log("Stats for lib ", library);
+
+    let genreFileSizesMb = {};
+    for (let genreName of Object.keys(library)) {
+        const genre = library[genreName];
+        log("Stats for genre " + genreName, genre);
+        const genreFileSizeMb = computeGenreFileSize(genreName);
+        genreFileSizesMb[genreName] = genreFileSizeMb;
+        const genreData = {
+            album_amount: Object.keys(genre).length,
+            no_album_track_count: genre["NO_ALBUM"].songs.length,
+            music_file_size: genreFileSizeMb,
+        };
+        result.genres[genreName] = genreData;
+    }
+
+    return result;
+};
+
 module.exports = {
     getGenreNames: getGenreNames,
     pickOne: pickOne,
@@ -333,4 +385,5 @@ module.exports = {
     switchToNextSong: switchToNextSong,
     switchToNextAlbum: switchToNextAlbum,
     musicIsPlaying: () => player.isPlaying(),
+    libraryStats: libraryStats,
 };

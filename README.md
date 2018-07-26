@@ -28,7 +28,8 @@ node-dj is a parametrizable mp3 jukebox that chooses mp3s based on pre-defined t
 * NDJ-0014: read times.json from library folder
 
 # Next tasks
-(next index: NDJ-0019)
+(next index: NDJ-0021)
+* NDJ-0020: serve library and times statistics
 * NDJ-0019: serve logs via web
 * NDJ-0012: show last 10 songs
 * NDJ-0013: refresh current song automatically
