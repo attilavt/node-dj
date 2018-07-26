@@ -207,5 +207,18 @@ module.exports = {
         const ln = needle.length;
         const end = haystack.substring(lh - ln);
         return end === needle;
-    }
+    },
+    /**
+     * @param leFloat {number} The float to pretty-print
+     * @param leDecimals {number} The amount of decimals to use for pretty-printing
+     * @returns {string} The pretty-printed float
+     */
+    roundStringWithDecimals: (leFloat, leDecimals) => {
+        let s = "" + leFloat;
+        const index = s.indexOf(".");
+        if (index > 0) {
+            s = s.substring(0, index + leDecimals);
+        }
+        return s;
+    },
 }

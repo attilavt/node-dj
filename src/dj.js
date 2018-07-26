@@ -318,6 +318,10 @@ const justPlay = function () {
     player.playSong(state().currentSong.path, switchToNextSong);
 };
 
+/**
+ * @param {string} item The name of the file or directory
+ * @returns {number} The file size of all mp3 files in the file or directory, in MB (rounded to two decimals) 
+ */
 const readSizeRecursive = (item) => {
     const stats = fs.lstatSync(item);
     let totalMb = (stats.size / (1024 * 1024));
@@ -337,14 +341,19 @@ const readSizeRecursive = (item) => {
     return Math.floor(totalMb * 100) / 100;
 }
 
+/**
+ * @param {string} genreName The name of the genre
+ * @returns {number} The file size of all mp3 files in the folder, in MB (rounded to two decimals) 
+ */
 const computeGenreFileSize = (genreName) => {
-    return readSizeRecursive(data.options.library_folder + data.options.folder_separator + genreName) + " MB";
+    return readSizeRecursive(data.options.library_folder + data.options.folder_separator + genreName);
 };
 
 const libraryStats = () => {
     const library = { ...state().library };
     const result = {
-        genres: {}
+        genres: {},
+        time_slots: {},
     };
     log("Stats for lib ", library);
 
@@ -357,9 +366,18 @@ const libraryStats = () => {
         const genreData = {
             album_amount: Object.keys(genre).length,
             no_album_track_count: genre["NO_ALBUM"].songs.length,
-            music_file_size: genreFileSizeMb,
+            music_file_size: genreFileSizeMb + " MB",
         };
         result.genres[genreName] = genreData;
+    }
+
+    for (let timeSlot of data.times.time_slots) {
+        let timeSlotFileSizeMb = 0;
+        for (let genreName of timeSlot.genre_names) {
+            timeSlotFileSizeMb += genreFileSizesMb[genreName];
+        }
+        timeSlotFileSizeMb = tools.roundStringWithDecimals(timeSlotFileSizeMb, 2);
+        result.time_slots[timeSlot.start + "-" + timeSlot.end] = timeSlotFileSizeMb + " MB";
     }
 
     return result;
