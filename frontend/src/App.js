@@ -51,7 +51,6 @@ class App extends Component {
     buttons.push(<ControlButton label="Skip to next album" action={putSkipToNextAlbum(this.props.dispatch)} isActive={this.props.isMusicPlaying} key="next-album" />);
     buttons.push(<ControlButton label="Stop music" action={putStopMusic(this.props.dispatch)} isActive={this.props.isMusicPlaying} key="stop-music" />);
     buttons.push(<ControlButton label="Start music" action={putStartMusic(this.props.dispatch)} isActive={!this.props.isMusicPlaying} key="start-music" />);
-    buttons.push(<ControlButton label="Reload library" action={putReloadLibrary(this.props.dispatch)} isActive={true} key="reload-library" />);
     return <div>{buttons}</div>
   }
 

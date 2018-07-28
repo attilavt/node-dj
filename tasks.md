@@ -9,14 +9,14 @@
 * NDJ-0014: read times.json from library folder
 * NDJ-0020: serve library and times statistics
 * NDJ-0013: refresh current song automatically
-* NDJ-0022: add information on how long current song is already playing
+* NDJ-0022: add information on how long current song is already 
+* NDJ-0021: hide reload library button
 
 # To do
 (next index: NDJ-0023)
-* NDJ-0021: hide reload library button
+* NDJ-0018: refactor to allow for unit tests & write docu
 * NDJ-0008: pick a certain song as next
 * NDJ-0009: pick a certain album as next
-* NDJ-0018: refactor to allow for unit tests & write docu
 * NDJ-0019: serve logs via web
 * NDJ-0012: show last 10 songs
 * NDJ-0002: add interface to control volume (https://github.com/jkeylu/node-mpg123-util)
