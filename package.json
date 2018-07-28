@@ -1,7 +1,25 @@
 {
     "name": "node-dj",
-    "version": "0.1.0",
-    "private": true,
+    "version": "1.0.0",
+    "description": "Plays mp3 files from certain folders depending on the hour of the day. Can be remote controlled via REST API",
+    "keywords": [
+        "node-dj",
+        "timeslot",
+        "dj",
+        "jukebox",
+        "hour",
+        "mp3",
+        "player",
+        "shuffle",
+        "backend"
+    ],
+    "homepage": "https://github.com/attilavt/node-dj",
+    "bugs": "https://github.com/attilavt/node-dj/issues",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/attilavt/node-dj"
+    },
+    "private": false,
     "dependencies": {
         "body-parser": "^1.18.3",
         "express": "^4.16.3",
