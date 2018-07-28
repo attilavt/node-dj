@@ -99,6 +99,20 @@ const getUtcOffset = function () {
     return "UTC" + (rawOffsetMinutes >= 0 ? "+" : "") + hoursString + ":" + minutesString;
 };
 
+/**
+ * 
+ * @param {number} n The number to pad 
+ * @param {number} l The desired length of the result
+ * @returns {string} A padded string representing the number 
+ */
+const padTo = (n, l) => {
+    let result = "" + n;
+    while (result.length < l) {
+        result = 0 + result;
+    }
+    return result;
+};
+
 module.exports = {
     logGenerator: function (flagCallback, prefix) {
         return function () {
@@ -220,5 +234,14 @@ module.exports = {
             s = s.substring(0, index + leDecimals);
         }
         return s;
+    },
+    /**
+     * @param oldDate {Date} The date for which to get the difference
+     * @returns {string} a 'mm:ss' representation of the difference between given date and now
+     */
+    timeSince: (oldDate) => {
+        const now = new Date();
+        const diffSeconds = Math.round((now.getTime() - oldDate.getTime()) / 1000);
+        return Math.round(diffSeconds / 60) + ":" + padTo(diffSeconds % 60, 2);
     },
 }

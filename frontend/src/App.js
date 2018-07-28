@@ -18,14 +18,16 @@ class App extends Component {
   }
 
   renderCurrentSong() {
-    let song = "(no information received)";
     if (this.props.currentSong) {
-      song = this.props.currentSong.song.song + " ==> " + this.props.currentSong.song.album;
-      if (!this.props.isMusicPlaying) {
-        song = "(MUSIC STOPPED!) " + song;
-      }
+      return <div>
+        {this.props.isMusicPlaying ? <span /> : <div>MUSIC STOPPED!<br /></div>}
+        Song: {this.props.currentSong.song.song}<br />
+        Album: {this.props.currentSong.song.album}<br />
+        Play time: {this.props.currentSong.song.time_playing}
+      </div>;
+    } else {
+      return <div>No information about current song available.</div>;
     }
-    return <div>Current Song: {song}</div>;
   }
 
   renderIpAddresses() {

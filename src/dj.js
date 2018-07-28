@@ -22,6 +22,8 @@ let stateHolder = {
 
 let data = null;
 
+let dateOfLastPlaySongAction = null;
+
 const buildPath = function () {
     let result = data.options.library_folder;
     for (let arg of arguments) {
@@ -265,7 +267,11 @@ const writeSongIntoHistory = function (song) {
 
 const currentMusic = function () {
     try {
-        return { song: readableSong(state().currentSong), album: readableAlbum(state().currentAlbum) };
+        return {
+            song: readableSong(state().currentSong),
+            album: readableAlbum(state().currentAlbum),
+            time_playing: tools.timeSince(dateOfLastPlaySongAction)
+        };
     } catch (err) {
         return { song: "Error in currentMusic(): " + err, album: "Error" };
     }
@@ -315,6 +321,7 @@ const stopMusic = function () {
 };
 
 const justPlay = function () {
+    dateOfLastPlaySongAction = new Date();
     player.playSong(state().currentSong.path, switchToNextSong);
 };
 

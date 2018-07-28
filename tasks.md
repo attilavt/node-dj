@@ -9,10 +9,10 @@
 * NDJ-0014: read times.json from library folder
 * NDJ-0020: serve library and times statistics
 * NDJ-0013: refresh current song automatically
+* NDJ-0022: add information on how long current song is already playing
 
 # To do
 (next index: NDJ-0023)
-* NDJ-0022: add information on how long current song is already playing
 * NDJ-0021: hide reload library button
 * NDJ-0008: pick a certain song as next
 * NDJ-0009: pick a certain album as next
