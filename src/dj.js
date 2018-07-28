@@ -1,39 +1,42 @@
-const tools = require('./tools');
 const logLog = true;
 const logDebug = false;
-const log = tools.logGenerator(() => logLog, "dj");
-const debug = tools.logGenerator(() => logDebug, "dj");
-const fs = require('fs');
-const player = require('./player');
+let log;
+let debug;
 
-const writeState = function () {
-    const stateCopy = { ...state() };
+/**
+ * Writes given state into the state file using given tools
+ * @param {Object} tools The tools to use for writing the state file
+ * @param {Object} state The state to write into the state file
+ */
+const writeState = (tools, state) => {
+    const stateCopy = { ...state };
     stateCopy.library = null;
     tools.writeFile('data/state.json', JSON.stringify(stateCopy));
 };
 
-let stateHolder = {
-    state: {
-        currentSong: null,
-        currentAlbum: null,
-        history: []
-    }
-};
-
-let data = null;
-
-let dateOfLastPlaySongAction = null;
-
-const buildPath = function () {
+/**
+ * 
+ * @param {Object} data 
+ * @param {String[]} parts 
+ * @returns {String} the new path
+ */
+const buildPath = (data, parts) => {
     let result = data.options.library_folder;
-    for (let arg of arguments) {
+    for (let arg of parts) {
         result += data.options.folder_separator + arg;
     }
     return result;
 };
 
 const NO_ALBUM = "NO_ALBUM";
-const song = function (album, songFileName) {
+
+/**
+ * Creates a song object from given parameters
+ * @param {Object} album The album object
+ * @param {String} songFileName The file name of the song
+ * @returns {Object} A song object
+ */
+const song = (album, songFileName) => {
     if (songFileName.indexOf(".mp3") !== (songFileName.length - 4)) {
         debug("Is not an mp3 file, skipping: ", songFileName);
         return;
@@ -53,6 +56,10 @@ const song = function (album, songFileName) {
     });
 }
 
+/**
+ * @param {Object} song
+ * @returns {String} a readable representation of the song object 
+ */
 const readableSong = function (song) {
     if (!song) {
         return "no song!";
@@ -60,6 +67,10 @@ const readableSong = function (song) {
     return song.artist + (song.song ? " - \"" + song.song + "\"" : "");
 }
 
+/**
+ * @param {Object} album
+ * @returns {String} a readable representation of the album object 
+ */
 const readableAlbum = function (album) {
     if (!album) {
         return "no album!";
@@ -67,6 +78,11 @@ const readableAlbum = function (album) {
     return album.name + " of " + album.genre;
 }
 
+/**
+ * @param {String} genreName Name of the genre to which the album belongs
+ * @param {String} albumName Name of the album
+ * @returns {Object} The album object 
+ */
 const album = function (genreName, albumName) {
     return {
         name: albumName,
@@ -75,71 +91,94 @@ const album = function (genreName, albumName) {
     };
 };
 
-const readLibrary = function () {
-    const lib = data.options.library_folder;
-    log("Starting to read library.");
-    const start = new Date().valueOf();
-    const rootCallback = function (err, rootFiles) {
-        let newLibrary = {};
-        if (err) {
-            log("error when reading library root", err);
-        } else {
-            for (let genreFolderName of rootFiles) {
-                if (!fs.lstatSync(lib + data.options.folder_separator + genreFolderName).isDirectory()) {
-                    log("skipping", genreFolderName, "since it is not a directory");
-                    continue;
-                }
+export class Dj {
+    constructor(tools, fs, player) {
+        this.tools = tools;
+        this.fs = fs;
+        this.player = player;
 
-                const genreFolderPath = buildPath(genreFolderName);
-                const genreObj = {};
-                if (fs.statSync(genreFolderPath).isDirectory()) {
-                    const albumFolderNames = fs.readdirSync(genreFolderPath);
-                    const noAlbumAlbum = album(genreFolderName, NO_ALBUM);
-                    for (let albumFolderName of albumFolderNames) {
-                        const albumFolderPath = buildPath(genreFolderName, albumFolderName);
-                        if (fs.statSync(albumFolderPath).isDirectory()) {
-                            const songsInAlbumFolder = fs.readdirSync(albumFolderPath);
-                            let albumObj = album(genreFolderName, albumFolderName);
-                            for (let songName of songsInAlbumFolder) {
-                                song(albumObj, songName);
-                            }
-                            genreObj[albumFolderName] = albumObj;
-                        } else {
-                            song(noAlbumAlbum, albumFolderName);
-                        }
-                    }
-                    genreObj[NO_ALBUM] = noAlbumAlbum;
-                }
-                newLibrary[genreFolderName] = genreObj;
+        this.stateHolder = {
+            state: {
+                currentSong: null,
+                currentAlbum: null,
+                history: []
             }
-            stateHolder.state.library = newLibrary;
-            const end = new Date().valueOf();
-            // log("Finished reading library: ", newLibrary);
-            log("Finished reading library. (", end - start, "ms )");
-            callbackWhenLibraryRead();
-        }
+        };
+
+        this.data = null;
+
+        this.dateOfLastPlaySongAction = null;
+
+        log = tools.logGenerator(() => logLog, "dj");
+        debug = tools.logGenerator(() => logDebug, "dj");
+    }
+
+    readLibrary() {
+        const lib = this.data.options.library_folder;
+        log("Starting to read library.");
+        const start = new Date().valueOf();
+        const rootCallback = function (err, rootFiles) {
+            let newLibrary = {};
+            if (err) {
+                log("error when reading library root", err);
+            } else {
+                for (let genreFolderName of rootFiles) {
+                    if (!this.fs.lstatSync(lib + this.data.options.folder_separator + genreFolderName).isDirectory()) {
+                        log("skipping", genreFolderName, "since it is not a directory");
+                        continue;
+                    }
+
+                    const genreFolderPath = buildPath(genreFolderName);
+                    const genreObj = {};
+                    if (this.fs.statSync(genreFolderPath).isDirectory()) {
+                        const albumFolderNames = this.fs.readdirSync(genreFolderPath);
+                        const noAlbumAlbum = album(genreFolderName, NO_ALBUM);
+                        for (let albumFolderName of albumFolderNames) {
+                            const albumFolderPath = buildPath(this.data, [genreFolderName, albumFolderName]);
+                            if (this.fs.statSync(albumFolderPath).isDirectory()) {
+                                const songsInAlbumFolder = this.fs.readdirSync(albumFolderPath);
+                                let albumObj = album(genreFolderName, albumFolderName);
+                                for (let songName of songsInAlbumFolder) {
+                                    song(albumObj, songName);
+                                }
+                                genreObj[albumFolderName] = albumObj;
+                            } else {
+                                song(noAlbumAlbum, albumFolderName);
+                            }
+                        }
+                        genreObj[NO_ALBUM] = noAlbumAlbum;
+                    }
+                    newLibrary[genreFolderName] = genreObj;
+                }
+                stateHolder.state.library = newLibrary;
+                const end = new Date().valueOf();
+                // log("Finished reading library: ", newLibrary);
+                log("Finished reading library. (", end - start, "ms )");
+                callbackWhenLibraryRead();
+            }
+        };
+        this.fs.readdir(lib, rootCallback);
     };
-    fs.readdir(lib, rootCallback);
 };
 
-const pickOne = function (list) {
+const pickOne = function (tools, list) {
     if (!list || typeof list !== "object") {
         throw "cannot pick from list " + tools.safeStringify(list);
     }
     const size = list.length;
     const index = Math.floor(Math.random() * size);
-    debug("picked " + index + " from list " + tools.safeStringify(list));
+    debug("picked " + index + " from list " + this.tools.safeStringify(list));
     return list[index];
 };
 
 const pickOneFromObject = function (objectWithKeys) {
     if (!objectWithKeys || typeof objectWithKeys !== "object") {
-        throw "cannot pick from object " + tools.safeStringify(objectWithKeys);
+        throw "cannot pick from object " + this.tools.safeStringify(objectWithKeys);
     }
     const list = Object.keys(objectWithKeys);
     const size = list.length;
     const index = Math.floor(Math.random() * size);
-    debug("picked " + index + " from object " + tools.safeStringify(list));
+    debug("picked " + index + " from object " + this.tools.safeStringify(list));
     return objectWithKeys[list[index]];
 };
 
@@ -170,7 +209,7 @@ const pickNextAlbum = function () {
     } while (!album || album.songs.length === 0);
     if (album.name === NO_ALBUM) {
         album = { ...album };
-        tools.shuffle(album.songs);
+        this.tools.shuffle(album.songs);
         const maxTrackCount = data.options.no_album_max_track_count;
         if (maxTrackCount && album.songs.length > maxTrackCount) {
             log("Reducing no_album copy's songs to just " + maxTrackCount);
@@ -191,9 +230,9 @@ const getNextSongInAlbum = function (album, currentSong) {
 };
 
 const getGenreNames = function () {
-    const hour = tools.getHour();
+    const hour = this.tools.getHour();
     for (let time of data.times.time_slots) {
-        if (tools.isBetweenHours(hour, time.start, time.end)) {
+        if (this.tools.isBetweenHours(hour, time.start, time.end)) {
             log("Returning genre names", time.genre_names, "for hour", hour);
             return time.genre_names;
         }
@@ -270,7 +309,7 @@ const currentMusic = function () {
         return {
             song: readableSong(state().currentSong),
             album: readableAlbum(state().currentAlbum),
-            time_playing: tools.timeSince(dateOfLastPlaySongAction)
+            time_playing: this.tools.timeSince(dateOfLastPlaySongAction)
         };
     } catch (err) {
         return { song: "Error in currentMusic(): " + err, album: "Error" };
@@ -306,7 +345,7 @@ const pickTrackAndPlay = function () {
 };
 
 const continueMusic = function () {
-    if (player.isPlaying()) {
+    if (this.player.isPlaying()) {
         throw "player is already playing!";
     }
     pickTrackAndPlay();
@@ -314,15 +353,15 @@ const continueMusic = function () {
 };
 
 const stopMusic = function () {
-    if (!player.isPlaying()) {
+    if (!this.player.isPlaying()) {
         throw "player is not playing!";
     }
-    player.stopPlayback();
+    this.player.stopPlayback();
 };
 
 const justPlay = function () {
     dateOfLastPlaySongAction = new Date();
-    player.playSong(state().currentSong.path, switchToNextSong);
+    this.player.playSong(state().currentSong.path, switchToNextSong);
 };
 
 /**
@@ -330,17 +369,17 @@ const justPlay = function () {
  * @returns {number} The file size of all mp3 files in the file or directory, in MB (rounded to two decimals) 
  */
 const readSizeRecursive = (item) => {
-    const stats = fs.lstatSync(item);
+    const stats = this.fs.lstatSync(item);
     let totalMb = (stats.size / (1024 * 1024));
     if (stats.isDirectory()) {
-        const list = fs.readdirSync(item);
+        const list = this.fs.readdirSync(item);
         for (let diritem of list) {
             const size = readSizeRecursive(item + data.options.folder_separator + diritem);
             totalMb += size;
         }
         log("file size of FOLDER " + item, totalMb, "MB");
     } else {
-        if (!tools.endsWith(item, ".mp3")) {
+        if (!this.tools.endsWith(item, ".mp3")) {
             return 0;
         }
         log("file size of FILE " + item, totalMb, "MB");
@@ -383,7 +422,7 @@ const libraryStats = () => {
         for (let genreName of timeSlot.genre_names) {
             timeSlotFileSizeMb += genreFileSizesMb[genreName];
         }
-        timeSlotFileSizeMb = tools.roundStringWithDecimals(timeSlotFileSizeMb, 2);
+        timeSlotFileSizeMb = this.tools.roundStringWithDecimals(timeSlotFileSizeMb, 2);
         result.time_slots[timeSlot.start + "-" + timeSlot.end] = timeSlotFileSizeMb + " MB";
     }
 
@@ -396,7 +435,7 @@ module.exports = {
     setData: function (dataFromIndexJs, callbackLibrary, callbackState) {
         data = dataFromIndexJs;
         callbackWhenLibraryRead = callbackLibrary;
-        tools.readFile(stateHolder, 'state', 'data/state.json', () => { readLibrary(); callbackState(); }, false);
+        this.tools.readFile(stateHolder, 'state', 'data/state.json', () => { readLibrary(); callbackState(); }, false);
     },
     pickNextSong: whatWillBeTheNextSong,
     getLibrary: function () {
