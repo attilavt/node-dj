@@ -53,7 +53,18 @@ class App extends Component {
     return <div>{buttons}</div>
   }
 
+  scheduleRefreshingCurrentSong() {
+    const refreshCurrentSong = () => {
+      this.props.dispatch(backendGetCurrentSongRequestAction);
+    };
+    const tenSeconds = 10 * 1000;
+    setTimeout(refreshCurrentSong, tenSeconds);
+  }
+
   render() {
+    if (this.props.currentSong) {
+      this.scheduleRefreshingCurrentSong();
+    }
     return (
       <div className="App">
         <header className="App-header">
