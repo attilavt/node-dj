@@ -1,12 +1,11 @@
 {
   "name": "node-dj-control",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Frontend for remote controlling an instance of 'node-dj'",
   "keywords": [
     "node-dj",
     "remote control"
   ],
-  "homepage": "https://github.com/attilavt/node-dj",
   "bugs": "https://github.com/attilavt/node-dj/issues",
   "repository": {
     "type": "git",
