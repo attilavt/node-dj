@@ -161,12 +161,18 @@ module.exports = {
         //return Math.floor(Math.random() * 24);
     },
 
-    isBetweenHours: function (theHour, windowStartHour, windowEndHour) {
+    /**
+     * @param {number} theHour The hour for which to find out whether it is inside an hour window
+     * @param {number} windowStartHour The start hour of the window
+     * @param {number} windowEndHour The end hour of the window
+     * @returns {boolean} whether given hour is within given time frame
+     */
+    isBetweenHours: (theHour, windowStartHour, windowEndHour) => {
         if (theHour === windowStartHour) {
             return true;
         }
-        if (theHour < windowStartHour) {
-            return theHour < windowEndHour;
+        if (windowEndHour < windowStartHour) {
+            return theHour < windowEndHour || theHour > windowStartHour;
         }
         return windowStartHour <= theHour && theHour < windowEndHour;
     },
