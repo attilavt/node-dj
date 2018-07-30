@@ -226,6 +226,11 @@ module.exports = {
     },
 
     getLogFileNames: () => logFileNames,
+    /**
+     * @param {string} haystack The string which to check for its ending
+     * @param {string} needle The string which could be contained in the haystack
+     * @returns {boolean} whether the needle is exactly at the end of the haystack
+     */
     endsWith: (haystack, needle) => {
         const lh = haystack.length;
         const ln = needle.length;

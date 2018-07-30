@@ -16,4 +16,10 @@ describe('Tools', function () {
         expect(tools.msToTime((7 * 60 + 4) * 1000 + 222)).to.eql("7:04");
         expect(tools.msToTime((37 * 60 + 3) * 1000 + 555)).to.eql("37:04");
     });
+    it('endsWith', () => {
+        expect(tools.endsWith("bababababa", "ab")).to.eql(false);
+        expect(tools.endsWith("bababababa", "a")).to.eql(true);
+        expect(tools.endsWith("baba", "baba")).to.eql(true);
+        expect(tools.endsWith("ba", "baba")).to.eql(false);
+    });
 })
