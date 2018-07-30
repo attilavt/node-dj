@@ -179,14 +179,18 @@ module.exports = {
 
     safeStringify: safeStringify,
 
-    msToTime: function (millis) {
+    /**
+     * @param {number} millis a duration in milliseconds to be converted to a human-readable string
+     * @returns {string} a human-readable representation in the format (mm:ss)
+     */
+    msToTime: (millis) => {
         const seconds = Math.round(millis / 1000);
         const minutes = Math.round(seconds / 60);
         if (minutes >= 60) {
             const hours = Math.floor(minutes / 60);
             return hours + ":" + padToLength(minutes % 60, 2) + ":" + padToLength(seconds % 60, 2);
         }
-        return minutes + ":" + padToLength(seconds, 2);
+        return minutes + ":" + padToLength(seconds % 60, 2);
     },
 
     getUtcOffset: getUtcOffset,
