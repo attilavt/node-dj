@@ -22,4 +22,8 @@ describe('Tools', function () {
         expect(tools.endsWith("baba", "baba")).to.eql(true);
         expect(tools.endsWith("ba", "baba")).to.eql(false);
     });
+    it('floatToStringWithMaxDecimals', () => {
+        expect(tools.floatToStringWithMaxDecimals(123456.789, 2)).to.eql('123456.78');
+        expect(tools.floatToStringWithMaxDecimals(123456, 2)).to.eql('123456');
+    });
 })

@@ -383,7 +383,7 @@ const libraryStats = () => {
         for (let genreName of timeSlot.genre_names) {
             timeSlotFileSizeMb += genreFileSizesMb[genreName];
         }
-        timeSlotFileSizeMb = tools.roundStringWithDecimals(timeSlotFileSizeMb, 2);
+        timeSlotFileSizeMb = tools.floatToStringWithMaxDecimals(timeSlotFileSizeMb, 2);
         result.time_slots[timeSlot.start + "-" + timeSlot.end] = timeSlotFileSizeMb + " MB";
     }
 

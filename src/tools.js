@@ -242,11 +242,11 @@ module.exports = {
      * @param leDecimals {number} The amount of decimals to use for pretty-printing
      * @returns {string} The pretty-printed float
      */
-    roundStringWithDecimals: (leFloat, leDecimals) => {
+    floatToStringWithMaxDecimals: (leFloat, leDecimals) => {
         let s = "" + leFloat;
         const index = s.indexOf(".");
         if (index > 0) {
-            s = s.substring(0, index + leDecimals);
+            s = s.substring(0, index + leDecimals + 1);
         }
         return s;
     },
