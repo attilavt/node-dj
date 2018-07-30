@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const tools = require('../src/tools');
 
-describe('Tools', function () {
+describe('Tools', () => {
     it('isBetweenHours, no day wrap in window', () => {
         expect(tools.isBetweenHours(16, 15, 17)).to.eql(true);
         expect(tools.isBetweenHours(14, 15, 17)).to.eql(false);
@@ -26,4 +26,4 @@ describe('Tools', function () {
         expect(tools.floatToStringWithMaxDecimals(123456.789, 2)).to.eql('123456.78');
         expect(tools.floatToStringWithMaxDecimals(123456, 2)).to.eql('123456');
     });
-})
+});
