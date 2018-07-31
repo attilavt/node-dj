@@ -30,6 +30,13 @@ const log = function () {
     logSomeWhere("tools", arguments);
 };
 
+const debugFlag = false;
+const debug = () => {
+    if (debugFlag) {
+        logSomeWhere("tools|d", arguments);
+    }
+};
+
 fs.readdir('./log/', (err, files) => {
     files.forEach(file => {
         logFileNames.push(file);
@@ -72,7 +79,7 @@ const safeStringify = function (obj) {
 
 /**
  * Shuffles array in place. ES6 version
- * @param {Array} a items An array containing the items.
+ * @param {array} a items An array containing the items.
  */
 const shuffle = function (a) {
     for (let i = a.length - 1; i > 0; i--) {
@@ -158,7 +165,6 @@ module.exports = {
 
     getHour: function () {
         return new Date().getHours();
-        //return Math.floor(Math.random() * 24);
     },
 
     /**
@@ -226,6 +232,7 @@ module.exports = {
     },
 
     getLogFileNames: () => logFileNames,
+
     /**
      * @param {string} haystack The string which to check for its ending
      * @param {string} needle The string which could be contained in the haystack
@@ -237,6 +244,7 @@ module.exports = {
         const end = haystack.substring(lh - ln);
         return end === needle;
     },
+
     /**
      * @param leFloat {number} The float to pretty-print
      * @param leDecimals {number} The amount of decimals to use for pretty-printing
@@ -250,6 +258,7 @@ module.exports = {
         }
         return s;
     },
+
     /**
      * @param oldDate {Date} The date for which to get the difference
      * @returns {string} a 'mm:ss' representation of the difference between given date and now
@@ -258,5 +267,26 @@ module.exports = {
         const now = new Date();
         const diffSeconds = Math.round((now.getTime() - oldDate.getTime()) / 1000);
         return Math.round(diffSeconds / 60) + ":" + padTo(diffSeconds % 60, 2);
+    },
+
+    pickOne: (list) => {
+        if (!list || typeof list !== "object") {
+            throw "cannot pick from list " + safeStringify(list);
+        }
+        const size = list.length;
+        const index = Math.floor(Math.random() * size);
+        debug("picked " + index + " from list " + safeStringify(list));
+        return list[index];
+    },
+
+    pickOneFromObject: (objectWithKeys) => {
+        if (!objectWithKeys || typeof objectWithKeys !== "object") {
+            throw "cannot pick from object " + safeStringify(objectWithKeys);
+        }
+        const list = Object.keys(objectWithKeys);
+        const size = list.length;
+        const index = Math.floor(Math.random() * size);
+        debug("picked " + index + " from object " + safeStringify(list));
+        return objectWithKeys[list[index]];
     },
 }

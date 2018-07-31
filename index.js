@@ -4,7 +4,7 @@ const app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 const port = 3001;
-const dj = require('./src/dj');
+const dj = require('./src/dj').newInstance();
 const tools = require('./src/tools');
 const path = require('path');
 
@@ -126,7 +126,7 @@ app.get('/api/genre-names', function (req, res) {
 
 app.get('/api/genre-name', function (req, res) {
     handleRequest(req);
-    res.send({ genre_name: dj.pickOne(dj.getGenreNames()) });
+    res.send({ genre_name: tools.pickOne(dj.getGenreNames()) });
 });
 
 app.get('/api/library', function (req, res) {
@@ -142,12 +142,12 @@ app.put('/api/library', function (req, res) {
 
 app.get('/api/next-song', function (req, res) {
     handleRequest(req);
-    res.send({ song: dj.pickNextSong() });
+    res.send({ ...dj.whatWillBeTheNextSong() });
 });
 
 app.get('/api/current-song', function (req, res) {
     handleRequest(req);
-    const song = dj.getCurrentSong();
+    const song = dj.currentMusic();
     song.isPlaying = dj.musicIsPlaying();
     res.send({ song: song });
 });

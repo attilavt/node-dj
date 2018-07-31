@@ -59,7 +59,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"timeSlots\": [\n        {\n            \"start\": 6,\n            \"end\": 9,\n            \"genre_names\": [\n                \"Oldies Heap\"\n            ]\n        },\n        {\n            \"start\": 9,\n            \"end\": 11,\n            \"genre_names\": [\n                \"Reggae Heap\"\n            ]\n        },\n        {\n            \"start\": 11,\n            \"end\": 14,\n            \"genre_names\": [\n                \"Ska Heap\",\n                \"Synthwave Heap\"\n            ]\n        },\n        {\n            \"start\": 14,\n            \"end\": 18,\n            \"genre_names\": [\n                \"Hip Hop Heap\",\n                \"Mainstream Heap\",\n                \"Reggae Heap\"\n            ]\n        },\n        {\n            \"start\": 18,\n            \"end\": 21,\n            \"genre_names\": [\n                \"French Heap\",\n                \"Oldies Heap\",\n                \"Turkish Heap\"\n            ]\n        },\n        {\n            \"start\": 21,\n            \"end\": 23,\n            \"genre_names\": [\n                \"Indie HQ Heap\",\n                \"Turkpop Heap\",\n                \"World Heap\"\n            ]\n        },\n        {\n            \"start\": 23,\n            \"end\": 6,\n            \"genre_names\": [\n                \"Dubstep Heap\",\n                \"Electronic HQ Heap\",\n                \"Meme Heap\",\n                \"Trap Heap\"\n            ]\n        }\n    ]\n}"
+							"raw": "{\n    \"time_slots\": [\n        {\n            \"start\": 6,\n            \"end\": 9,\n            \"genre_names\": [\n                \"Oldies Heap\"\n            ]\n        },\n        {\n            \"start\": 9,\n            \"end\": 11,\n            \"genre_names\": [\n                \"Reggae Heap\"\n            ]\n        },\n        {\n            \"start\": 11,\n            \"end\": 14,\n            \"genre_names\": [\n                \"Ska Heap\",\n                \"Synthwave Heap\"\n            ]\n        },\n        {\n            \"start\": 14,\n            \"end\": 18,\n            \"genre_names\": [\n                \"Hip Hop Heap\",\n                \"Mainstream Heap\",\n                \"Reggae Heap\"\n            ]\n        },\n        {\n            \"start\": 18,\n            \"end\": 21,\n            \"genre_names\": [\n                \"French Heap\",\n                \"Oldies Heap\",\n                \"Turkish Heap\"\n            ]\n        },\n        {\n            \"start\": 21,\n            \"end\": 23,\n            \"genre_names\": [\n                \"Indie HQ Heap\",\n                \"Turkpop Heap\",\n                \"World Heap\"\n            ]\n        },\n        {\n            \"start\": 23,\n            \"end\": 6,\n            \"genre_names\": [\n                \"Dubstep Heap\",\n                \"Electronic HQ Heap\",\n                \"Meme Heap\",\n                \"Trap Heap\"\n            ]\n        }\n    ]\n}"
 						},
 						"url": {
 							"raw": "localhost:3001/api/times",
@@ -185,6 +185,29 @@
 							"path": [
 								"api",
 								"library"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET library stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:3001/api/library-stats",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"library-stats"
 							]
 						}
 					},
