@@ -11,7 +11,6 @@ const nodePath = require('path');
 const NO_ALBUM = "NO_ALBUM";
 
 const switchToNextSong = (that) => {
-    console.log("What is the this of switchToNextSong?", that);
     that._writeSongIntoHistory(that._state().currentSong);
     const before = that.currentMusic();
     that._pickTrackAndPlay();
