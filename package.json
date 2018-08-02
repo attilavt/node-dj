@@ -40,7 +40,7 @@
         "start_dev": "node ./index.js",
         "start_with_mock_dj": "node ./dj.mock.js",
         "test": "npm run test-unit",
-        "test-unit": "NODE_ENV=test mocha --require co-mocha 'test/*.spec.js'",
-        "test-integration": "NODE_ENV=test mocha --require co-mocha 'test/integration.js'"
+        "test-unit": "NODE_ENV=test mocha --require co-mocha 'test/*.spec.js' --exit",
+        "test-integration": "NODE_ENV=test mocha --require co-mocha 'test/integration.js' --exit"
     }
 }
