@@ -1,31 +1,39 @@
 const should = require('should');
-const request = require('request');
-const shell = require('shelljs');
-const url = "http://localhost:3001/api";
 const tools = require('../src/tools');
 const http = require('http');
+
+const url = "http://localhost:3001/api";
 const shouldLog = true;
 const log = tools.logGenerator(() => shouldLog, "test");
 
+const applyOnError = (req) => {
+    req.on('error', function (e) {
+        console.log('problem with request: ' + e.message);
+        throw e;
+    });
+};
+
 const simpleGetTest = (urlSuffix) => function (done) {
     log("Initiating get request");
-    request(url + urlSuffix, function (error, response, body) {
+    const req = http.get(url + urlSuffix, function (response) {
         log("Received get response for " + urlSuffix, response.statusCode);
         response.statusCode.should.eql(200);
         done();
     });
+    applyOnError(req);
 };
 
 const getAndPutTest = (suffix) => function (done) {
-    request(url + suffix, function (error, response, body) {
-        if (error) {
-            throw error;
-        }
-        log("Received old data");
+    const req = http.get(url + suffix, function (response) {
+        log("Received response", response);
         response.statusCode.should.eql(200);
-        const oldData = body;
-        putTest(suffix, oldData, done);
+        response.on('data', function (chunk) {
+            log("Received old data", chunk);
+            const oldData = chunk;
+            putTest(suffix, oldData, done);
+        });
     });
+    applyOnError(req);
 };
 
 const putTest = (suffix, payload, done) => {
@@ -33,7 +41,7 @@ const putTest = (suffix, payload, done) => {
     log("Initiating put request for ", options);
     let req = http.request(options, function (response) {
         if (response.statusCode != 200) {
-            "Error".should.eql("ERROR! status code " + response.statusCode + ":" + response.statusMessage);
+            "".should.eql("ERROR on PUT " + suffix + "! status code " + response.statusCode + ": " + response.statusMessage);
         }
         log("Received put response for /api" + suffix, response);
         done();
@@ -44,9 +52,7 @@ const putTest = (suffix, payload, done) => {
         const res = req.write(payload);
         console.log("res", res);
     }
-    req.on('error', function (e) {
-        console.log('problem with request: ' + e.message);
-    });
+    applyOnError(req);
     req.end();
 };
 
@@ -83,5 +89,8 @@ describe('HttpServer', function () {
     });
     it('should put skip album ok', function (done) {
         putTest("/skip-album", null, done);
+    });
+    it('should start/stop music', function (done) {
+        putTest("/music-stop", null, () => { putTest("/music-start", null, done) });
     });
 });
