@@ -148,7 +148,7 @@ app.get('/api/next-song', function (req, res) {
 app.get('/api/current-song', function (req, res) {
     handleRequest(req);
     const song = dj.currentMusic();
-    song.isPlaying = dj.musicIsPlaying();
+    song.isPlaying = dj.isMusicPlaying();
     res.send({ song: song });
 });
 
