@@ -70,11 +70,12 @@ class Dj {
                                 let albumObj = djh.album(genreFolderName, albumFolderOrSongWithoutAlbumName);
                                 for (let songName of songsInAlbumFolder) {
                                     djh.song(albumObj, songName, lib);
+                                    log("album folder child", songName, "has been processed");
                                 }
                                 genreObj[albumFolderOrSongWithoutAlbumName] = albumObj;
                             } else {
-                                log("genre folder child", albumFolderOrSongWithoutAlbumName, "is a NO_ALBUM file");
                                 djh.song(noAlbumAlbum, albumFolderOrSongWithoutAlbumName, lib);
+                                log("genre folder child", albumFolderOrSongWithoutAlbumName, "as been processed as a NO_ALBUM file");
                             }
                         }
                         genreObj[NO_ALBUM] = noAlbumAlbum;
