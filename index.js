@@ -10,6 +10,8 @@ const path = require('path');
 
 const debug = true;
 const log = tools.logGenerator(() => debug, "index");
+let dateOfStartingServer;
+let dateOfRunningIndexJs = new Date();
 
 // process command line arguments
 const readOptionsFromCommandLine = () => {
@@ -78,7 +80,7 @@ const run = function () {
     }
     log("Running with options", data.options);
     log("Running with times", data.times);
-
+    dateOfStartingServer = new Date();
     dj.play();
 };
 
@@ -86,6 +88,9 @@ app.use(express.static(path.join(__dirname, "frontend", "build")));
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/api/health', function (req, res) {
+    if (!dateOfStartingServer) {
+        res.status(500).send('Not yet fully running, started at ' + dateOfRunningIndexJs);
+    }
     res.send('OK');
 });
 

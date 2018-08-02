@@ -31,7 +31,10 @@
         "co-mocha": "^1.2.2",
         "mocha": "^5.2.0",
         "sinon": "^6.1.4",
-        "sinon-chai": "^3.2.0"
+        "sinon-chai": "^3.2.0",
+        "should": "^13.2.3",
+        "request": "^2.87.0",
+        "shelljs": "^0.8.2"
     },
     "scripts": {
         "prestart": "cd frontend && npm run build",
@@ -39,6 +42,7 @@
         "start_dev": "node ./index.js",
         "start_with_mock_dj": "node ./dj.mock.js",
         "test": "npm run test-unit",
-        "test-unit": "NODE_ENV=test mocha --require co-mocha 'test/*.spec.js'"
+        "test-unit": "NODE_ENV=test mocha --require co-mocha 'test/*.spec.js'",
+        "test-integration": "NODE_ENV=test mocha --require co-mocha 'test/integration.js'"
     }
 }

@@ -40,3 +40,6 @@ and entering the following line:
 * To make sure that the ssh daemon is run on boot, issue the following command: `sudo systemctl enable sshd.service`.
 * To set the correct time zone, issue the following command: `sudo timedatectl set-timezone "Europe/Istanbul"`
 * if you are running node-dj on a raspberry pi, don't forget to set the audio output with `sudo raspi-config`
+
+# Integration tests
+Run `integration_tests.sh` to run a local instance and the server, wait until it's up and then run the integration tests.
