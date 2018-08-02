@@ -78,6 +78,9 @@ describe('HttpServer', function () {
     it('should get genre names ok', simpleGetTest("/genre-names"));
     it('should get genre name ok', simpleGetTest("/genre-name"));
     it('should get library ok', simpleGetTest("/library"));
+    it('should put reload library ok', function (done) {
+        putTest("/library", null, done);
+    });
     it('should get library stats ok', simpleGetTest("/library-stats"));
     it('should get songs ok', simpleGetTest("/songs"));
     it('should get current song ok', simpleGetTest("/current-song"));
