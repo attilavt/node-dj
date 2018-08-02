@@ -28,7 +28,7 @@ const playSong = function (path, callbackWhenDone, dj) {
     setTimeout(() => {
         log("mock play issues callbackWhenDone()");
         isPlaying = false;
-        callbackWhenDone();
+        callbackWhenDone(dj);
     }, 10000);
 }
 module.exports = {

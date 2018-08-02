@@ -3,7 +3,7 @@ const nodePath = require('path');
 const fs = require('fs');
 
 const log = tools.logGenerator(() => true, "djh");
-
+const debug = tools.logGenerator(() => true, "(djh)");
 const NO_ALBUM = "NO_ALBUM";
 
 const readSizeRecursive = (item) => {
