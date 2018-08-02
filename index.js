@@ -111,7 +111,7 @@ const ru = function (fieldName) {
     app.put('/api/' + fieldName, function (req, res) {
         handleRequest(req);
         if (req.body === undefined || typeof req.body !== "object" || Object.keys(req.body).length <= 0) {
-            throwError(res, 400, 'error');
+            throwError(res, 400, 'error: body is empty!');
         }
         log(`PUT /api/${fieldName} to ${tools.safeStringify(req.body)}`);
         data[fieldName] = req.body;
