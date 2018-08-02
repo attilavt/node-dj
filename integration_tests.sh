@@ -23,9 +23,14 @@ function kill_running_server {
 }
 
 kill_running_server
+npm test
+UNITTESTS=$?
 echo "starting"
 npm run start_dev "/" "/home/attila/Music/node-dj-long/" &
 #npm run start_dev "/" "/home/attila/Music/node-dj-long/" >/dev/null 2>/dev/null &
 wait_until_up
 npm run test-integration
+INTITESTS=$?
 kill_running_server
+echo "UNIT TESTS: $UNITTESTS (0 if successful)"
+echo "INTI TESTS: $INTITESTS (0 if successful)"
