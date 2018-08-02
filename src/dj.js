@@ -47,11 +47,14 @@ class Dj {
             if (err) {
                 log("error when reading library root", err);
             } else {
+                log("Starting to process library");
                 for (let genreFolderName of rootFiles) {
                     if (!fs.lstatSync(lib + that.data.options.folder_separator + genreFolderName).isDirectory()) {
                         log("skipping", genreFolderName, "since it is not a directory");
                         continue;
                     }
+
+                    log("starting to process genre folder", genreFolderName);
 
                     const genreFolderPath = nodePath.join(lib, genreFolderName);
                     const genreObj = {};
@@ -59,8 +62,10 @@ class Dj {
                         const albumFolderOrSongWithoutAlbumNames = fs.readdirSync(genreFolderPath);
                         const noAlbumAlbum = djh.album(genreFolderName, NO_ALBUM);
                         for (let albumFolderOrSongWithoutAlbumName of albumFolderOrSongWithoutAlbumNames) {
+                            log("processing genre folder child", albumFolderOrSongWithoutAlbumName);
                             const albumFolderOrSongWithoutAlbumPath = nodePath.join(lib, genreFolderName, albumFolderOrSongWithoutAlbumName);
                             if (fs.statSync(albumFolderOrSongWithoutAlbumPath).isDirectory()) {
+                                log("genre folder child", albumFolderOrSongWithoutAlbumName, "is an album folder");
                                 const songsInAlbumFolder = fs.readdirSync(albumFolderOrSongWithoutAlbumPath);
                                 let albumObj = djh.album(genreFolderName, albumFolderOrSongWithoutAlbumName);
                                 for (let songName of songsInAlbumFolder) {
@@ -68,12 +73,16 @@ class Dj {
                                 }
                                 genreObj[albumFolderOrSongWithoutAlbumName] = albumObj;
                             } else {
+                                log("genre folder child", albumFolderOrSongWithoutAlbumName, "is a NO_ALBUM file");
                                 djh.song(noAlbumAlbum, albumFolderOrSongWithoutAlbumName, lib);
                             }
                         }
                         genreObj[NO_ALBUM] = noAlbumAlbum;
+                    } else {
+                        log("supposed genre folder", genreFolderName, "is not a directory!");
                     }
                     newLibrary[genreFolderName] = genreObj;
+                    log("finished processing genre folder", genreFolderName);
                 }
                 this._state().library = newLibrary;
                 const end = new Date().valueOf();
@@ -81,6 +90,8 @@ class Dj {
                 log("Finished reading library. (", end - start, "ms )");
                 if (callbackWhenDoneReadingLibrary) {
                     callbackWhenDoneReadingLibrary();
+                } else {
+                    log("no callback when done reading library defined");
                 }
             }
         };
