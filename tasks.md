@@ -11,16 +11,17 @@
 * NDJ-0013: refresh current song automatically
 * NDJ-0022: add information on how long current song is already 
 * NDJ-0021: hide reload library button
+* NDJ-0018: refactor to allow for unit tests & write docu
 
 # To do
-(next index: NDJ-0023)
-* NDJ-0018: refactor to allow for unit tests & write docu
+(next index: NDJ-0024)
+* NDJ-0023: show library overview in webapp
+* NDJ-0002: add interface to control volume (https://github.com/jkeylu/node-mpg123-util)
 * NDJ-0008: pick a certain song as next
 * NDJ-0009: pick a certain album as next
+* NDJ-0006: allow running app without defining times
 * NDJ-0019: serve logs via web
 * NDJ-0012: show last 10 songs
-* NDJ-0002: add interface to control volume (https://github.com/jkeylu/node-mpg123-util)
 * NDJ-0004: ?? add persistent metadata file (surviving library reload)
 * NDJ-0005: add option to disable autoplaying music on startup
-* NDJ-0006: allow running app without defining times
 * NDJ-0007: consider history when picking a new album
