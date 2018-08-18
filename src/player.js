@@ -22,6 +22,8 @@ const stopPlayback = function () {
     }
 };
 
+let currentSpeaker;
+
 const playSong = function (path, callbackWhenDone, dj) {
     stopPlayback();
     log("playSong called with", path);
@@ -41,6 +43,8 @@ const playSong = function (path, callbackWhenDone, dj) {
     isPlaying = true;
     inputStream.pipe(decoder).pipe(speaker);
     const date2 = new Date().valueOf();
+    const randomNoOfThis = "" + Math.random();
+    currentSpeaker = randomNoOfThis;
     debug("Stream piped to decoder and speaker");
 
     speaker.on('flush', function () {
@@ -55,7 +59,20 @@ const playSong = function (path, callbackWhenDone, dj) {
     });
 
     speaker.on('error', function (e, b) {
-        log("speaker error for " + path, e, b);
+        log("speaker error for " + path + ", maybe because of skip?", e, b);
+        const tenSeconds = 10 * 1000;
+        setTimeout(() => {
+            if (currentSpeaker === randomNoOfThis) {
+                log("It seems that the music is stuck! Re-issuing playback.");
+                speaker = null;
+                inputstream = null;
+                decoder = null;
+                isPlaying = false;
+                callbackWhenDone(dj);
+            } else {
+                debug("Music seems to play on even after error.");
+            }
+        }, tenSeconds);
     });
 }
 module.exports = {
