@@ -31,15 +31,17 @@ Press windows key -> enter "Powershell" -> right click and choose "Run as admini
 `npm install --global --production windows-build-tools`
 
 ## Linux (ubuntu)
-* For developing and running on linux, the following command must first be run:
-`sudo apt-get install -y libasound2-dev make gcc g++`
-* For making sure that node-dj is run at each startup, I recommend using the following command:
-`crontab -e`
-and entering the following line:
-`@reboot /path/to/script` (where the script should contain switching to the node-dj folder and running the `run.sh` script)
-* To make sure that the ssh daemon is run on boot, issue the following command: `sudo systemctl enable sshd.service`.
-* To set the correct time zone, issue the following command: `sudo timedatectl set-timezone "Europe/Istanbul"`
-* if you are running node-dj on a raspberry pi, don't forget to set the audio output with `sudo raspi-config`
+The first step would be to carry out `install-linux-prepull.sh`, which does the following:
+* Installing git and the ssh server
+* Making sure that the ssh daemon is run on boot with the following command: `sudo systemctl enable sshd.service`.
+* Cloning this repository and carrying out `install-linux.sh`.
+If you have already checked out the repository and do not need ssh, you can also simply carry out `install-linux.sh`, which does the following:
+* Installing dependencies
+* Building node-dj and node-dj-controller
+* Generating the run-script `run.sh`
+* Generating the string to copy into crontab and opening crontab
+If necessary, set the correct time zone, issue the following command: `sudo timedatectl set-timezone "Europe/Istanbul"`
+If you are running node-dj on a raspberry pi, don't forget to set the audio output with `sudo raspi-config`
 
 # Integration tests
 Run `integration_tests.sh` to run a local instance and the server, wait until it's up and then run the integration tests.
