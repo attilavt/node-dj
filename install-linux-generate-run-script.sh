@@ -13,7 +13,7 @@ echo 'echo "Starting run.sh at $DATE" >> run.log' >> run.sh
 echo "pwd >> run.log" >> run.sh
 echo '' >> run.sh
 echo 'LSUSB=$(lsusb)' >> run.sh
-echo 'if [ $LSUSB'" == *\"$WIFI_CHIP\"* ]" >> run.sh
+echo 'if [ "$LSUSB"'" == *\"$WIFI_CHIP\"* ]" >> run.sh
 echo 'then' >> run.sh
 echo '    echo "USB wifi adapter found" >> run.log' >> run.sh
 echo 'else' >> run.sh
