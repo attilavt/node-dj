@@ -20,5 +20,7 @@ cd frontend && npm install
 bash install-linux-generate-run-script.sh
 
 # Reference run.sh in crontab
-echo "Please enter into crontab: '@reboot $USER /home/$USER/node-dj/run.sh'"
+echo "Please enter into crontab: '@reboot /home/$USER/node-dj/run.sh'"
 crontab -e
+sudo update-rc.d cron defaults # activate crontab (will prompt for password)
+
