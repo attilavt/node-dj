@@ -7,7 +7,7 @@ rm run.sh || true
 touch run.sh || true
 echo "#!/bin/bash" >> run.sh
 echo '' >> run.sh
-echo '# check for workingdir, might be ~ due to crontab execution'
+echo '# check for workingdir, might be ~ due to crontab execution' >> run.sh
 echo 'WORKINGDIR=$(pwd)' >> run.sh
 echo 'STARTUP_MSG=""' >> run.sh
 echo 'if [ "$WORKINGDIR" == "*node-dj" ]' >> run.sh
@@ -27,7 +27,7 @@ echo 'echo "Starting run.sh at $DATE" >> run.log' >> run.sh
 echo "pwd >> run.log" >> run.sh
 echo '' >> run.sh
 echo 'LSUSB=$(lsusb)' >> run.sh
-echo 'if [ "$LSUSB"'" == *\"$WIFI_CHIP\"* ]" >> run.sh
+echo 'if [[ "$LSUSB"'" = *\"$WIFI_CHIP\"* ]]" >> run.sh
 echo 'then' >> run.sh
 echo '    echo "USB wifi adapter found" >> run.log' >> run.sh
 echo 'else' >> run.sh
