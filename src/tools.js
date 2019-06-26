@@ -22,7 +22,7 @@ const logSomeWhere = function (prefix, args) {
         }
     }
     toLog = `${new Date().toISOString()} ${toLog}`;
-    console.log(toLog);
+    // console.log(toLog);
     logToWrite.push(toLog);
 };
 
