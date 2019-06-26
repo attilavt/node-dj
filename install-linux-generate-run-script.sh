@@ -33,6 +33,7 @@ echo '    echo "USB wifi adapter found" >> run.log' >> run.sh
 echo 'else' >> run.sh
 echo '    echo "USB wifi adapter not found!" >> run.log' >> run.sh
 echo 'fi' >> run.sh
+echo 'ipconfig -a >> run.log' >> run.sh
 echo "git pull >> run.log || true" >> run.sh
 echo "npm run start \"/\" \"$LIBRARY_PATH\" >> run.log" >> run.sh
 chmod +x run.sh
