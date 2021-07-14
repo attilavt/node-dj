@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 echo "Prerequisite: _snap_ command usable, git already installed"
-sudo snap install node --classic --channel=12
+sudo snap install node --classic --channel=14
 sudo apt-get update
-sudo apt-get install -y openssh-server vim nodejs libasound2-dev make gcc g++
+sudo apt-get install -y openssh-server vim nodejs libasound2-dev make gcc g++ mpg123 net-tools wireless-tools
 sudo npm install -g react-scripts
 
 # enable ssh access from outside
@@ -17,7 +17,7 @@ sudo systemctl enable ssh
 npm install
 
 # build node-dj-controller
-cd frontend && npm install
+cd frontend && npm install && npm run build && cd ..
 
 # Generate run.sh
 
@@ -42,6 +42,7 @@ echo 'if [ "$WORKINGDIR" == "*node-dj" ]' >> run.sh
 echo 'then' >> run.sh
 echo '    STARTUP_MSG="Already in folder $WORKINGDIR"' >> run.sh
 echo 'else' >> run.sh
+echo '    cd ' >> run.sh
 echo '    cd node-dj' >> run.sh
 echo '    STARTUP_MSG="Switched to node-dj folder from $WORKINGDIR"' >> run.sh
 echo 'fi' >> run.sh
@@ -61,7 +62,11 @@ echo '    echo "USB wifi adapter found" >> run.log' >> run.sh
 echo 'else' >> run.sh
 echo '    echo "USB wifi adapter not found!" >> run.log' >> run.sh
 echo 'fi' >> run.sh
-echo 'ipconfig -a >> run.log' >> run.sh
+echo 'ifconfig -a >> run.log' >> run.sh
 echo "git pull >> run.log || true" >> run.sh
 echo "npm run start \"/\" \"$LIBRARY_PATH\" >> run.log" >> run.sh
 chmod +x run.sh
+
+echo "Are you running this program on a raspberry pi? If so, press enter to continue and configure the audio output"
+read UNUSED2
+sudo raspi-config

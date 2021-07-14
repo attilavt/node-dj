@@ -1,0 +1,3 @@
+
+        "@suldashi/lame": "^1.2.5",
+        "speaker-arm64": "^0.5.2"
