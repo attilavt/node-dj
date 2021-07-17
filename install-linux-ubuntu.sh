@@ -13,6 +13,17 @@ sudo ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key
 sudo systemctl status ssh
 sudo systemctl enable ssh
 
+# install dependency _devowlio/node-lame_ that is not published in npmjs
+cd ..
+git clone https://github.com/devowlio/node-lame.git
+mv node-lame devowlio-node-lame
+cd devowlio-node-lame
+npm install
+npm run build
+cd ..
+cd node-dj
+
+
 # build node-dj
 npm install
 
@@ -68,3 +79,29 @@ echo "git pull >> run.log 2>> run.log || true" >> run.sh
 echo 'echo "Finished pulling latest version from server. Booting node-dj..." >> run.log' >> run.sh
 echo "npm run start \"/\" \"$LIBRARY_PATH\" >> run.log 2>> run.log" >> run.sh
 chmod +x run.sh
+
+# see dedoimedo.com/computers/rpi4-ubuntu-mate-audio.html
+echo "If you are on Ubuntu mate for raspberry, add the following line"
+echo "dtparam=audio=on"
+echo "Press enter to edit file"
+read UNUSED
+sudo vim /boot/firmware/usercfg.txt
+
+sudo usermod -a -G audio "$USER"
+
+# aplay -l # for checking alsa device list
+
+
+# not necessary, sound already working.
+# 1 for headphones, but gives error:
+# amixer: cannot find the given element from control default
+# sudo amixer cset numid=3 1
+
+# not necessary, sound already working.
+# as seen on raspberrypi.stackexchange.com/questions/113997/sound-output-stuck-on-hdmi-working
+# echo "Add the following line"
+# echo "hdmi_ignore_edid_audio=1"
+# echo "Press enter to continue"
+# read UNUSED
+# sudo vim /boot/config.txt
+
