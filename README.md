@@ -31,11 +31,9 @@ Press windows key -> enter "Powershell" -> right click and choose "Run as admini
 `npm install --global --production windows-build-tools`
 
 ## Linux (ubuntu)
-The first step would be to carry out `install-linux-prepull.sh`, which does the following:
-* Installing git and the ssh server
+The first step would be to carry out `install-ubuntu.sh`, which does the following:
+* Installing the ssh server
 * Making sure that the ssh daemon is run on boot with the following command: `sudo systemctl enable sshd.service`.
-* Cloning this repository and carrying out `install-linux.sh`.
-If you have already checked out the repository and do not need ssh, you can also simply carry out `install-linux.sh`, which does the following:
 * Installing dependencies
 * Building node-dj and node-dj-controller
 * Generating the run-script `run.sh`
