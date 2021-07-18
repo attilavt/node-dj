@@ -41,6 +41,7 @@ echo '# check for workingdir, might be ~ due to crontab execution' >> run.sh
 echo 'WORKINGDIR=$(pwd)' >> run.sh
 echo '# add PATH to in case cron doesnt have it' >> run.sh
 echo "export PATH=\"$PATH\"" >> run.sh
+echo "export XDG_RUNTIME_DIR=\"/run/user/1000\"" >> run.sh
 echo 'STARTUP_MSG=""' >> run.sh
 echo 'if [ "$WORKINGDIR" == "*node-dj" ]' >> run.sh
 echo 'then' >> run.sh
@@ -111,3 +112,4 @@ sudo usermod -a -G audio "$USER"
 
 # see stackoverflow.com/questions/62585077/how-do-i-get-amixer-pcm-numid-3-to-work-on-raspberry-pi-4
 # sudo bash -c 'echo -e " defaults.pcm.card 1 \ndefaults.ctl.card 1"> /etc/asound.conf'
+
