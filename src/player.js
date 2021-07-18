@@ -1,4 +1,4 @@
-const lame = require('lame');
+const Decoder = require('minimp3');
 var Speaker = require('speaker');
 const tools = require('./tools');
 const fs = require('fs');
@@ -27,7 +27,7 @@ let currentSpeaker;
 const playSong = function (path, callbackWhenDone, dj) {
     stopPlayback();
     log("playSong called with", path);
-    decoder = new lame.Decoder;
+    decoder = new Decoder();
 
     decoder.on('error', function (e) {
         log("decoder error", e);

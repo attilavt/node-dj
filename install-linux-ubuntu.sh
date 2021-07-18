@@ -22,7 +22,11 @@ cd frontend && npm install && npm run build && cd ..
 # Generate run.sh
 
 # Reference run.sh in crontab
-echo "Please enter into crontab: '@reboot /home/$USER/node-dj/run.sh'"
+echo "Please enter into crontab:"
+echo "SHELL=/bin/bash"
+echo "'@reboot /home/$USER/node-dj/run.sh'"
+echo "Press enter to continue..."
+read UNUSED
 crontab -e
 sudo update-rc.d cron defaults # activate crontab (will prompt for password)
 
@@ -35,6 +39,8 @@ echo "#!/bin/bash" >> run.sh
 echo '' >> run.sh
 echo '# check for workingdir, might be ~ due to crontab execution' >> run.sh
 echo 'WORKINGDIR=$(pwd)' >> run.sh
+echo '# add PATH to in case cron doesnt have it' >> run.sh
+echo "export PATH=\"$PATH\"" >> run.sh
 echo 'STARTUP_MSG=""' >> run.sh
 echo 'if [ "$WORKINGDIR" == "*node-dj" ]' >> run.sh
 echo 'then' >> run.sh
@@ -60,7 +66,8 @@ echo '    echo "USB wifi adapter found" >> run.log' >> run.sh
 echo 'else' >> run.sh
 echo '    echo "USB wifi adapter not found!" >> run.log' >> run.sh
 echo 'fi' >> run.sh
-echo 'ifconfig -a >> run.log' >> run.sh
+echo 'echo "Network configuration:"' >> run.sh
+echo 'ifconfig -a >> run.log 2>> run.log || true' >> run.sh
 echo 'echo "Pulling latest version from server..." >> run.log' >> run.sh
 echo "git pull >> run.log 2>> run.log || true" >> run.sh
 echo 'echo "Finished pulling latest version from server. Booting node-dj..." >> run.log' >> run.sh
@@ -102,3 +109,5 @@ sudo usermod -a -G audio "$USER"
 # read UNUSED
 # sudo vim /boot/config.txt
 
+# see stackoverflow.com/questions/62585077/how-do-i-get-amixer-pcm-numid-3-to-work-on-raspberry-pi-4
+# sudo bash -c 'echo -e " defaults.pcm.card 1 \ndefaults.ctl.card 1"> /etc/asound.conf'
