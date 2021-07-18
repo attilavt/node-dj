@@ -1,5 +1,5 @@
-const lame = require('lame');
-var Speaker = require('speaker');
+const Decoder = require('minimp3');
+var Speaker = require('speaker-arm64');
 const tools = require('./tools');
 const fs = require('fs');
 
@@ -27,7 +27,7 @@ let currentSpeaker;
 const playSong = function (path, callbackWhenDone, dj) {
     stopPlayback();
     log("playSong called with", path);
-    decoder = new lame.Decoder;
+    decoder = new Decoder();
 
     decoder.on('error', function (e) {
         log("decoder error", e);
