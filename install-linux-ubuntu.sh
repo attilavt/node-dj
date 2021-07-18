@@ -68,3 +68,39 @@ echo "git pull >> run.log 2>> run.log || true" >> run.sh
 echo 'echo "Finished pulling latest version from server. Booting node-dj..." >> run.log' >> run.sh
 echo "npm run start \"/\" \"$LIBRARY_PATH\" >> run.log 2>> run.log" >> run.sh
 chmod +x run.sh
+
+echo "Are you running the program on Ubuntu mate for raspberry?"
+echo "Type \"yes\" to continue"
+read IS_UBUNTU_RPI
+if [[ $IS_UBUNTU_RPI == "yes" ]]
+then
+	echo "Continuing with ubuntu mate raspberry specific setup"
+else
+  echo "Finished setup."
+	exit 0
+fi
+
+# see dedoimedo.com/computers/rpi4-ubuntu-mate-audio.html
+echo "Add the following line to /boot/firmware/usercfg.txt"
+echo "dtparam=audio=on"
+echo "Press enter to edit file"
+read UNUSED
+sudo vim /boot/firmware/usercfg.txt
+
+sudo usermod -a -G audio "$USER"
+
+# aplay -l # for checking alsa device list
+
+# not necessary, sound already working.
+# 1 for headphones, but gives error:
+# amixer: cannot find the given element from control default
+# sudo amixer cset numid=3 1
+
+# not necessary, sound already working.
+# as seen on raspberrypi.stackexchange.com/questions/113997/sound-output-stuck-on-hdmi-working
+# echo "Add the following line"
+# echo "hdmi_ignore_edid_audio=1"
+# echo "Press enter to continue"
+# read UNUSED
+# sudo vim /boot/config.txt
+
