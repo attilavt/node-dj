@@ -1,5 +1,5 @@
 const Decoder = require('minimp3');
-var Speaker = require('speaker');
+var Speaker = require('speaker-arm64');
 const tools = require('./tools');
 const fs = require('fs');
 
