@@ -2,6 +2,7 @@ const Decoder = require('minimp3');
 var Speaker = require('speaker-arm64');
 const tools = require('./tools');
 const fs = require('fs');
+const stream = require('stream');
 
 const audioOptions = { channels: 2, bitDepth: 16, sampleRate: 44100 };
 const logLog = true;
@@ -41,7 +42,34 @@ const playSong = function (path, callbackWhenDone, dj) {
 
     const date1 = new Date().valueOf();
     isPlaying = true;
-    inputStream.pipe(decoder).pipe(speaker);
+    const decodedStream = inputStream.pipe(decoder);
+    const bufferedChunks = [];
+    const minChunkAmountBeforeWriting = 200;
+    let chunkAmount = 0;
+    let written = false;
+    const bufferedStream = new stream.PassThrough();
+    decodedStream.on("data", (chunk) => {
+        chunkAmount++;
+        if (chunkAmount <= minChunkAmountBeforeWriting) {
+            bufferedChunks.push(chunk);
+        }
+        if(chunkAmount === minChunkAmountBeforeWriting) {
+            bufferedStream.write(Buffer.concat(bufferedChunks));
+            written = true;
+        }
+        if(chunkAmount > minChunkAmountBeforeWriting) {
+            bufferedStream.write(chunk);
+        }
+    });
+    decodedStream.on("end", () => {
+        if(!written) {
+            bufferedStream.write(Buffer.concat(bufferedChunks));
+        }
+        bufferedStream.end();
+    });
+    decodedStream.on("error", (err) => log('Error in decoded stream', err));
+    
+    bufferedStream.pipe(speaker);
     const date2 = new Date().valueOf();
     const randomNoOfThis = "" + Math.random();
     currentSpeaker = randomNoOfThis;
