@@ -32,17 +32,6 @@ npm install
 cd frontend && npm install && npm run build && cd ..
 
 # Generate run.sh
-
-# Reference run.sh in crontab
-echo "Please enter into crontab:"
-echo "SHELL=/bin/bash"
-echo "'@reboot /home/$USER/node-dj/run.sh'"
-echo "Press enter to continue..."
-read UNUSED
-crontab -e
-sudo update-rc.d cron defaults # activate crontab (will prompt for password)
-
-
 echo "Please enter the library root path:"
 read LIBRARY_PATH
 rm run.sh || true
@@ -86,6 +75,38 @@ echo "git pull >> run.log 2>> run.log || true" >> run.sh
 echo 'echo "Finished pulling latest version from server. Booting node-dj..." >> run.log' >> run.sh
 echo "npm run start \"/\" \"$LIBRARY_PATH\" >> run.log 2>> run.log" >> run.sh
 chmod +x run.sh
+
+# Boot on startup
+echo "How do you want to make the program run at startup?"
+echo "Type \"cron\" to continue with cron setup or anything else for systemd (default)"
+read STARTUP_BY_CRON
+if [[ $STARTUP_BY_CRON == "cron" ]]
+then
+	echo "Please enter into crontab:"
+  echo "SHELL=/bin/bash"
+  echo "'@reboot /home/$USER/node-dj/run.sh'"
+  echo "Press enter to continue..."
+  read UNUSED
+  crontab -e
+  sudo update-rc.d cron defaults # activate crontab (will prompt for password)
+else
+  echo "Setting up systemd..."
+  SYSTEMD_SERVICE_FILE = "/etc/systemd/system/nodedj.service"
+  sudo touch $SYSTEMD_SERVICE_FILE
+  sudo echo "[Unit]" >> $SYSTEMD_SERVICE_FILE
+  
+  sudo echo "Description=Jukebox for playing music" >> $SYSTEMD_SERVICE_FILE
+  sudo echo "After=network.target" >> $SYSTEMD_SERVICE_FILE
+
+  sudo echo "[Service]" >> $SYSTEMD_SERVICE_FILE
+  sudo echo "ExecStart=/bin/bash /home/altin/node-dj/run.sh" >> $SYSTEMD_SERVICE_FILE
+  sudo echo "RestartSec=10" >> $SYSTEMD_SERVICE_FILE
+  sudo echo "User=$USER" >> $SYSTEMD_SERVICE_FILE
+
+  sudo echo "[Install]" >> $SYSTEMD_SERVICE_FILE
+  sudo echo "WantedBy=default.target" >> $SYSTEMD_SERVICE_FILE
+  sudo systemctl enable nodedj
+fi
 
 echo "Are you running the program on Ubuntu mate for raspberry?"
 echo "Type \"yes\" to continue"
