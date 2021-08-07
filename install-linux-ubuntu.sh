@@ -1,7 +1,17 @@
 #!/bin/bash
 set -e
-echo "Prerequisite: _snap_ command usable, git already installed"
-sudo snap install node --classic --channel=14
+echo "Do you want to install using snap or downloaded script?"
+echo "Type \"snap\" to continue with snap and anything else to continue with downloaded script"
+read INSTALL_VIA_SNAP
+if [[ $INSTALL_VIA_SNAP == "snap" ]]
+then
+  echo "Installing node using snap"
+  sudo snap install node --classic --channel=10
+else
+  echo "Installing node using downloaded script"
+  curl -fsSL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+fi
+
 sudo apt-get update
 sudo apt-get install -y openssh-server vim nodejs libasound2-dev make gcc g++ mpg123 net-tools wireless-tools
 sudo npm install -g react-scripts
@@ -34,8 +44,8 @@ cd frontend && npm install && npm run build && cd ..
 # Generate run.sh
 echo "Please enter the library root path:"
 read LIBRARY_PATH
-rm run.sh || true
-touch run.sh || true
+rm run.sh 2> /dev/null || true
+touch run.sh 2> /dev/null || true
 echo "#!/bin/bash" >> run.sh
 echo '' >> run.sh
 echo '# check for workingdir, might be ~ due to crontab execution' >> run.sh
@@ -68,7 +78,7 @@ echo '    echo "USB wifi adapter found" >> run.log' >> run.sh
 echo 'else' >> run.sh
 echo '    echo "USB wifi adapter not found!" >> run.log' >> run.sh
 echo 'fi' >> run.sh
-echo 'echo "Network configuration:"' >> run.sh
+echo 'echo "Network configuration:" >> run.log' >> run.sh
 echo 'ifconfig -a >> run.log 2>> run.log || true' >> run.sh
 echo 'echo "Pulling latest version from server..." >> run.log' >> run.sh
 echo "git pull >> run.log 2>> run.log || true" >> run.sh
