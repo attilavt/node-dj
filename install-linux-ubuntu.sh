@@ -118,6 +118,25 @@ else
   sudo systemctl enable nodedj
 fi
 
+echo "Do you want to write ~/.asoundrc to avoid playback errors when switching songs?"
+echo "Type \"yes\" to continue"
+read WRITE_ASOUNDRC
+if [[ $WRITE_ASOUNDRC == "yes" ]]
+then
+  rm /home/$USER/.asoundrc 2> /dev/null || true
+  touch /home/$USER/.asoundrc 2> /dev/null || true
+  echo "pcm.!default {" >> /home/$USER/.asoundrc
+  echo "        type hw" >> /home/$USER/.asoundrc
+  echo "        card 1" >> /home/$USER/.asoundrc
+  echo "}" >> /home/$USER/.asoundrc
+  echo "" >> /home/$USER/.asoundrc
+  echo "ctl.!default {" >> /home/$USER/.asoundrc
+  echo "        type hw" >> /home/$USER/.asoundrc
+  echo "        card 0" >> /home/$USER/.asoundrc
+  echo "}" >> /home/$USER/.asoundrc
+	echo "Finished writing ~/.asoundrc"
+fi
+
 echo "Are you running the program on Ubuntu mate for raspberry?"
 echo "Type \"yes\" to continue"
 read IS_UBUNTU_RPI
