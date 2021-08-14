@@ -296,39 +296,69 @@ class Dj {
     }
 
     /**
+     * @param {{start: number, end: number}} timeSlot
+     * @returns {number}
+     */
+    timeSlotLengthHours(timeSlot) {
+        const length = timeSlot.end - timeSlot.start;
+        if (length < 0) {
+            return length + 24;
+        }
+        return length;
+    }
+
+    /**
      * @returns {object} An object containing various statistics about the library.
      */
     libraryStats() {
         const library = { ...this._state().library };
         const result = {
+            /**
+             * @type {{[x: string]: {album_amount: number, no_album_track_count: number,
+             * absolute_music_file_size_mb: number, music_file_size_per_hour_mb: number }}}
+             */
             genres: {},
+            /**
+             * @type {{[x: string]: { time_slot_absolute_file_size_mb: string,
+             * time_slot_relative_file_size_mb: string}}}
+             */
             time_slots: {},
         };
         log("Stats for lib ", library);
 
-        let genreFileSizesMb = {};
         for (let genreName of Object.keys(library)) {
             const genre = library[genreName];
             log("Stats for genre " + genreName, genre);
             const genreFileSizeMb = this._computeGenreFileSize(genreName);
-            genreFileSizesMb[genreName] = genreFileSizeMb;
+
+            let totalHoursUsed = 0;
+            for (let timeSlot of this.data.times.time_slots) {
+                if (timeSlot.genre_names.includes(genreName)) {
+                    totalHoursUsed += this.timeSlotLengthHours(timeSlot);
+                }
+            }
+
             const genreData = {
                 album_amount: Object.keys(genre).length,
                 no_album_track_count: genre[NO_ALBUM].songs.length,
-                music_file_size: genreFileSizeMb + " MB",
+                absolute_music_file_size_mb: genreFileSizeMb,
+                music_file_size_per_hour_mb: (genreFileSizeMb / totalHoursUsed),
             };
             result.genres[genreName] = genreData;
         }
-
         for (let timeSlot of this.data.times.time_slots) {
-            let timeSlotFileSizeMb = 0;
+            let timeSlotAbsoluteFileSizeMb = 0;
+            let timeSlotRelativeFileSizeMb = 0;
+            const length = this.timeSlotLengthHours(timeSlot);
             for (let genreName of timeSlot.genre_names) {
-                timeSlotFileSizeMb += genreFileSizesMb[genreName];
+                timeSlotAbsoluteFileSizeMb += result.genres[genreName].absolute_music_file_size_mb;
+                timeSlotRelativeFileSizeMb += (result.genres[genreName].music_file_size_per_hour_mb * length);
             }
-            timeSlotFileSizeMb = tools.floatToStringWithMaxDecimals(timeSlotFileSizeMb, 2);
-            result.time_slots[timeSlot.start + "-" + timeSlot.end] = timeSlotFileSizeMb + " MB";
+            result.time_slots[timeSlot.start + "-" + timeSlot.end] = {
+                time_slot_absolute_file_size_mb: tools.floatToStringWithMaxDecimals(timeSlotAbsoluteFileSizeMb, 2),
+                time_slot_relative_file_size_mb: tools.floatToStringWithMaxDecimals(timeSlotRelativeFileSizeMb, 2),
+            };
         }
-
         return result;
     }
 
@@ -359,7 +389,7 @@ class Dj {
 
 module.exports = {
     /**
-     * @returns {Object} a new instance of the dj class
+     * @returns a new instance of the dj class
      */
     newInstance: () => new Dj()
 };
