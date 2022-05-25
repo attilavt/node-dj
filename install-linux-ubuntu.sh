@@ -11,15 +11,18 @@ read USER_CONFIRM
 TARGET_USER="$USER"
 
 echo "Do you want to install using snap or downloaded script?"
-echo "Type \"snap\" to continue with snap and anything else to continue with downloaded script"
+echo "Type \"snap\" to continue with snap and anything else to continue with script downloaded from nodesource.com"
 read INSTALL_VIA_SNAP
 if [[ $INSTALL_VIA_SNAP == "snap" ]]
 then
   echo "Installing node using snap"
   sudo snap install node --classic --channel=10
 else
-  echo "Installing node using downloaded script"
-  curl -fsSL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+  echo "Installing node using script downloaded from nodesource.com"
+  LANG=en_US.utf8 curl -fsSL https://deb.nodesource.com/setup_10.x > temp_setup_10.sh
+  echo "if your distribution is not supported, add it to the check_alt commands"
+  sudo bash temp_setup_10.sh
+  rm temp_setup_10.sh
 fi
 
 sudo apt-get update
@@ -97,7 +100,7 @@ echo 'echo "" >> run_archive.log' >> run.sh
 echo 'cat run.log >> run_archive.log' >> run.sh
 echo '' >> run.sh
 echo '# startup and debugging messages' >> run.sh
-echo 'echo "Starting run.sh at $DATE" > run.log' >> run.sh
+echo 'echo "Starting run.sh at $DATE as $USER" > run.log' >> run.sh
 echo 'echo "$STARTUP_MSG" >> run.log' >> run.sh
 echo "pwd >> run.log" >> run.sh
 echo '' >> run.sh
