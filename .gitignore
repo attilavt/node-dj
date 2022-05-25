@@ -4,3 +4,4 @@ log/**/log-*.txt
 run.*
 /music
 run_local_windows.sh
+run_archive.log

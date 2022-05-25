@@ -1,5 +1,15 @@
 #!/bin/bash
 set -e
+echo "This script contains the sudo command and will prompt for your password."
+echo "It needs to be run with a user authorized for sudo, but it shall not be run using sudo!"
+echo ""
+
+# read target user name
+echo "The program will be set up for user $USER. Press enter to continue"
+# compgen -u || true
+read USER_CONFIRM
+TARGET_USER="$USER"
+
 echo "Do you want to install using snap or downloaded script?"
 echo "Type \"snap\" to continue with snap and anything else to continue with downloaded script"
 read INSTALL_VIA_SNAP
@@ -41,6 +51,16 @@ npm install
 # build node-dj-controller
 cd frontend && npm install && npm run build && cd ..
 
+# query startup type
+echo "How do you want to make the program run at startup?"
+echo "Type \"cron\" to continue with cron setup or anything else for systemd (default)"
+read STARTUP_BY_CRON
+
+# query optional maxoldspacesize parameter
+echo "Do you want the run script to set the max-old-space-size parameter to solve npm install bugs?"
+echo "Type \"setparam\" to continue with cron setup or anything else for no (default)"
+read SET_MAX_OLD_SPACE_SIZE_PARAM
+
 # Generate run.sh
 echo "Please enter the library root path:"
 read LIBRARY_PATH
@@ -50,9 +70,12 @@ echo "#!/bin/bash" >> run.sh
 echo '' >> run.sh
 echo '# check for workingdir, might be ~ due to crontab execution' >> run.sh
 echo 'WORKINGDIR=$(pwd)' >> run.sh
-echo '# add PATH to in case cron doesnt have it' >> run.sh
-echo "export PATH=\"$PATH\"" >> run.sh
-echo "export XDG_RUNTIME_DIR=\"/run/user/1000\"" >> run.sh
+if [[ $STARTUP_BY_CRON == "cron" ]]
+then
+  echo '# add PATH to in case cron doesnt have it' >> run.sh
+  echo "export PATH=\"$PATH\"" >> run.sh
+  echo "export XDG_RUNTIME_DIR=\"/run/user/1000\"" >> run.sh
+fi
 echo 'STARTUP_MSG=""' >> run.sh
 echo 'if [ "$WORKINGDIR" == "*node-dj" ]' >> run.sh
 echo 'then' >> run.sh
@@ -65,10 +88,17 @@ echo 'fi' >> run.sh
 
 
 echo 'DATE=$(date "+%Y-%m-%d_%H-%M-%S")' >> run.sh
-echo 'echo "============================================================" >> run.log' >> run.sh
-echo 'echo "" >> run.log' >> run.sh
+echo '' >> run.sh
+echo '# manage run.log and run_archive.log' >> run.sh
+echo 'touch run_archive.log || true' >> run.sh
+echo 'echo "" >> run_archive.log' >> run.sh
+echo 'echo "============================================================" >> run_archive.log' >> run.sh
+echo 'echo "" >> run_archive.log' >> run.sh
+echo 'cat run.log >> run_archive.log' >> run.sh
+echo '' >> run.sh
+echo '# startup and debugging messages' >> run.sh
+echo 'echo "Starting run.sh at $DATE" > run.log' >> run.sh
 echo 'echo "$STARTUP_MSG" >> run.log' >> run.sh
-echo 'echo "Starting run.sh at $DATE" >> run.log' >> run.sh
 echo "pwd >> run.log" >> run.sh
 echo '' >> run.sh
 echo 'LSHWNET=$(lshw -C network 2> /dev/null)' >> run.sh
@@ -80,21 +110,27 @@ echo '    echo "USB wifi adapter not found!" >> run.log' >> run.sh
 echo 'fi' >> run.sh
 echo 'echo "Network configuration:" >> run.log' >> run.sh
 echo 'ifconfig -a >> run.log 2>> run.log || true' >> run.sh
+echo '' >> run.sh
+echo '# check for newer versions' >> run.sh
 echo 'echo "Pulling latest version from server..." >> run.log' >> run.sh
 echo "git pull >> run.log 2>> run.log || true" >> run.sh
 echo 'echo "Finished pulling latest version from server. Booting node-dj..." >> run.log' >> run.sh
+echo '' >> run.sh
+echo '# run the program' >> run.sh
+if [[ $SET_MAX_OLD_SPACE_SIZE_PARAM == "setparam" ]]
+then
+  echo '# set param to solve mystery bug in npm install' >> run.sh
+  echo 'export NODE_OPTIONS="--max-old-space-size=8192"' >> run.sh
+fi
 echo "npm run start \"/\" \"$LIBRARY_PATH\" >> run.log 2>> run.log" >> run.sh
 chmod +x run.sh
 
 # Boot on startup
-echo "How do you want to make the program run at startup?"
-echo "Type \"cron\" to continue with cron setup or anything else for systemd (default)"
-read STARTUP_BY_CRON
 if [[ $STARTUP_BY_CRON == "cron" ]]
 then
 	echo "Please enter into crontab:"
   echo "SHELL=/bin/bash"
-  echo "'@reboot /home/$USER/node-dj/run.sh'"
+  echo "'@reboot /home/$TARGET_USER/node-dj/run.sh'"
   echo "Press enter to continue..."
   read UNUSED
   crontab -e
@@ -111,7 +147,7 @@ else
   sudo echo "[Service]" >> $SYSTEMD_SERVICE_FILE
   sudo echo "ExecStart=/bin/bash /home/altin/node-dj/run.sh" >> $SYSTEMD_SERVICE_FILE
   sudo echo "RestartSec=10" >> $SYSTEMD_SERVICE_FILE
-  sudo echo "User=$USER" >> $SYSTEMD_SERVICE_FILE
+  sudo echo "User=$TARGET_USER" >> $SYSTEMD_SERVICE_FILE
 
   sudo echo "[Install]" >> $SYSTEMD_SERVICE_FILE
   sudo echo "WantedBy=default.target" >> $SYSTEMD_SERVICE_FILE
@@ -123,17 +159,17 @@ echo "Type \"yes\" to continue"
 read WRITE_ASOUNDRC
 if [[ $WRITE_ASOUNDRC == "yes" ]]
 then
-  rm /home/$USER/.asoundrc 2> /dev/null || true
-  touch /home/$USER/.asoundrc 2> /dev/null || true
-  echo "pcm.!default {" >> /home/$USER/.asoundrc
-  echo "        type hw" >> /home/$USER/.asoundrc
-  echo "        card 1" >> /home/$USER/.asoundrc
-  echo "}" >> /home/$USER/.asoundrc
-  echo "" >> /home/$USER/.asoundrc
-  echo "ctl.!default {" >> /home/$USER/.asoundrc
-  echo "        type hw" >> /home/$USER/.asoundrc
-  echo "        card 0" >> /home/$USER/.asoundrc
-  echo "}" >> /home/$USER/.asoundrc
+  rm /home/$TARGET_USER/.asoundrc 2> /dev/null || true
+  touch /home/$TARGET_USER/.asoundrc 2> /dev/null || true
+  echo "pcm.!default {" >> /home/$TARGET_USER/.asoundrc
+  echo "        type hw" >> /home/$TARGET_USER/.asoundrc
+  echo "        card 1" >> /home/$TARGET_USER/.asoundrc
+  echo "}" >> /home/$TARGET_USER/.asoundrc
+  echo "" >> /home/$TARGET_USER/.asoundrc
+  echo "ctl.!default {" >> /home/$TARGET_USER/.asoundrc
+  echo "        type hw" >> /home/$TARGET_USER/.asoundrc
+  echo "        card 0" >> /home/$TARGET_USER/.asoundrc
+  echo "}" >> /home/$TARGET_USER/.asoundrc
 	echo "Finished writing ~/.asoundrc"
 fi
 
@@ -148,6 +184,10 @@ else
 	exit 0
 fi
 
+#
+# FROM HERE ON: UBUNTU MATE FOR RASPBERRY SPECIFIC!
+#
+
 # see dedoimedo.com/computers/rpi4-ubuntu-mate-audio.html
 echo "Add the following line to /boot/firmware/usercfg.txt"
 echo "dtparam=audio=on"
@@ -155,7 +195,7 @@ echo "Press enter to edit file"
 read UNUSED
 sudo vim /boot/firmware/usercfg.txt
 
-sudo usermod -a -G audio "$USER"
+sudo usermod -a -G audio "$TARGET_USER"
 
 # aplay -l # for checking alsa device list
 
