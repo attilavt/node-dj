@@ -89,8 +89,7 @@ echo 'if [ "$WORKINGDIR" == "*node-dj" ]' >> run.sh
 echo 'then' >> run.sh
 echo '    STARTUP_MSG="Already in folder $WORKINGDIR"' >> run.sh
 echo 'else' >> run.sh
-echo '    cd ' >> run.sh
-echo '    cd node-dj' >> run.sh
+echo "    cd /home/$TARGET_USER/node-dj" >> run.sh
 echo '    STARTUP_MSG="Switched to node-dj folder from $WORKINGDIR"' >> run.sh
 echo 'fi' >> run.sh
 
