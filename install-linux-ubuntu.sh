@@ -64,6 +64,11 @@ echo "Do you want the run script to set the max-old-space-size parameter to solv
 echo "Type \"setparam\" to continue with cron setup or anything else for no (default)"
 read SET_MAX_OLD_SPACE_SIZE_PARAM
 
+# query whether there should be a wait when starting
+echo "Do you want the run script to contain a _sleep_ command to allow the system to boot completely?"
+echo "Type \"yes\" to continue with sleep command or anything else for no (default)"
+read ADD_SLEEP_COMMAND
+
 # Generate run.sh
 echo "Please enter the library root path:"
 read LIBRARY_PATH
@@ -98,6 +103,13 @@ echo 'echo "" >> run_archive.log' >> run.sh
 echo 'echo "============================================================" >> run_archive.log' >> run.sh
 echo 'echo "" >> run_archive.log' >> run.sh
 echo 'cat run.log >> run_archive.log' >> run.sh
+if [[ $ADD_SLEEP_COMMAND == "yes" ]]
+then
+  echo "" >> run.sh
+  echo '# sleep command for allowing boot up' >> run.sh
+  echo "sleep 30" >> run.sh
+  echo "" >> run.sh
+fi
 echo '' >> run.sh
 echo '# startup and debugging messages' >> run.sh
 echo 'echo "Starting run.sh at $DATE as $USER" > run.log' >> run.sh
