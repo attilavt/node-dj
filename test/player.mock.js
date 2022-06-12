@@ -1,18 +1,12 @@
 const tools = require('./tools');
-const fs = require('fs');
 
 const logLog = true;
-const logDebug = false;
 const log = tools.logGenerator(() => logLog, "player");
-const debug = tools.logGenerator(() => logDebug, "player");
-let inputStream;
 let isPlaying = false;
 
 const stopPlayback = function () {
     if (isPlaying) {
         log("Stopping playback of old song...");
-        inputStream.close();
-        //inputStream.unpipe(speaker).unpipe(decoder);
         isPlaying = false;
     }
 };
@@ -20,11 +14,9 @@ const stopPlayback = function () {
 const playSong = function (path, callbackWhenDone, dj) {
     stopPlayback();
     log("playSong called with", path);
-    inputStream = fs.createReadStream(path);
 
     log("Starting to play ", path);
     isPlaying = true;
-    // this.inputStream.pipe(decoder).pipe(speaker);
     setTimeout(() => {
         log("mock play issues callbackWhenDone()");
         isPlaying = false;

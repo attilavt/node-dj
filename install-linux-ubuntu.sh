@@ -16,17 +16,17 @@ read INSTALL_VIA_SNAP
 if [[ $INSTALL_VIA_SNAP == "snap" ]]
 then
   echo "Installing node using snap"
-  sudo snap install node --classic --channel=10
+  sudo snap install node
 else
   echo "Installing node using script downloaded from nodesource.com"
-  LANG=en_US.utf8 curl -fsSL https://deb.nodesource.com/setup_10.x > temp_setup_10.sh
+  LANG=en_US.utf8 curl -fsSL https://deb.nodesource.com/setup_16.x > temp_setup_16.sh
   echo "if your distribution is not supported, add it to the check_alt commands"
-  sudo bash temp_setup_10.sh
-  rm temp_setup_10.sh
+  sudo bash temp_setup_16.sh
+  rm temp_setup_16.sh
 fi
 
 sudo apt-get update
-sudo apt-get install -y openssh-server vim nodejs libasound2-dev make gcc g++ mpg123 net-tools wireless-tools
+sudo apt-get install -y openssh-server vim nodejs mpg123 net-tools wireless-tools
 sudo npm install -g react-scripts
 
 # enable ssh access from outside

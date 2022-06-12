@@ -20,7 +20,10 @@ const switchToNextSong = (that) => {
 };
 
 class Dj {
-    constructor() {
+    /**
+     * @param {string} commandForPlayingFile 
+     */
+    constructor(commandForPlayingFile) {
         this.stateHolder = {
             state: {
                 currentSong: null,
@@ -31,6 +34,7 @@ class Dj {
 
         this.data = null;
         this.dateOfLastPlaySongAction = null;
+        this.commandForPlayingFile = commandForPlayingFile;
     }
 
     /**
@@ -389,7 +393,8 @@ class Dj {
 
 module.exports = {
     /**
+     * @param {string} commandForPlayingFile
      * @returns a new instance of the dj class
      */
-    newInstance: () => new Dj()
+    newInstance: (commandForPlayingFile) => new Dj(commandForPlayingFile)
 };

@@ -1,79 +1,63 @@
-const lame = require('lame');
-var Speaker = require('speaker');
 const tools = require('./tools');
-const fs = require('fs');
+const { exec, ChildProcess } = require('child_process');
 
-const audioOptions = { channels: 2, bitDepth: 16, sampleRate: 44100 };
 const logLog = true;
 const logDebug = false;
 const log = tools.logGenerator(() => logLog, "player");
 const debug = tools.logGenerator(() => logDebug, "player");
-let speaker;
-let inputStream;
-let decoder;
 let isPlaying = false;
 
+/** @type {string} */
+let currentSpeaker;
+
+/** @type {ChildProcess} */
+let currentProcess;
+
 const stopPlayback = function () {
-    if (speaker) {
+    if (currentProcess) {
         log("Stopping playback of old song...");
-        //inputStream.unpipe(speaker).unpipe(decoder);
         isPlaying = false;
-        speaker.close();
+        currentProcess.kill(9);
     }
 };
-
-let currentSpeaker;
 
 const playSong = function (path, callbackWhenDone, dj) {
     stopPlayback();
     log("playSong called with", path);
-    decoder = new lame.Decoder;
-
-    decoder.on('error', function (e) {
-        log("decoder error", e);
-    });
-
-    speaker = new Speaker(audioOptions);
-    debug("Speaker initialized");
-
-    inputStream = fs.createReadStream(path);
-    debug("Read stream created");
 
     const date1 = new Date().valueOf();
     isPlaying = true;
-    inputStream.pipe(decoder).pipe(speaker);
     const date2 = new Date().valueOf();
     const randomNoOfThis = "" + Math.random();
     currentSpeaker = randomNoOfThis;
-    debug("Stream piped to decoder and speaker");
-
-    speaker.on('flush', function () {
-        const date3 = new Date().valueOf();
-        log("finished playing", path, "after", tools.msToTime(date3 - date1));
-        debug("speaker", speaker);
-        speaker = null;
-        inputstream = null;
-        decoder = null;
-        isPlaying = false;
-        callbackWhenDone(dj);
-    });
-
-    speaker.on('error', function (e, b) {
-        log("speaker error for " + path + ", maybe because of skip?", e, b);
-        const tenSeconds = 10 * 1000;
-        setTimeout(() => {
-            if (currentSpeaker === randomNoOfThis) {
-                log("It seems that the music is stuck! Re-issuing playback.");
-                speaker = null;
-                inputstream = null;
-                decoder = null;
-                isPlaying = false;
-                callbackWhenDone(dj);
-            } else {
-                debug("Music seems to play on even after error.");
-            }
-        }, tenSeconds);
-    });
+    /**
+     * @param {import('child_process').ExecException} error 
+     * @param {string} stdout 
+     * @param {string} stderr 
+     */
+    const callbackForCommandline = function (error, stdout, stderr) {
+        log(`stdout ${stdout}`);
+        log(`stderr ${stderr}`);
+        if(!error) {
+            const date3 = new Date().valueOf();
+            log("finished playing", path, "after", tools.msToTime(date3 - date1));
+            isPlaying = false;
+            callbackWhenDone(dj);
+        } else {
+            log("speaker error for " + path + ", maybe because of skip?", error, stdout, stderr);
+            const tenSeconds = 10 * 1000;
+            setTimeout(() => {
+                if (currentSpeaker === randomNoOfThis) {
+                    log("It seems that the music is stuck! Re-issuing playback.");
+                    isPlaying = false;
+                    callbackWhenDone(dj);
+                } else {
+                    debug("Music seems to play on even after error.");
+                }
+            }, tenSeconds);
+        }
+    };
+    currentProcess = exec(`${dj.commandForPlayingFile} "${path}"`, callbackForCommandline);
 }
 module.exports = {
     /**

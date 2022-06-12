@@ -4,9 +4,11 @@ const app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 const port = 3001;
-const dj = require('./src/dj').newInstance();
+const DJ = require('./src/dj');
 const tools = require('./src/tools');
 const path = require('path');
+
+const commandForPlayingFileFallback = 'mpg123';
 
 const debug = true;
 const log = tools.logGenerator(() => debug, "index");
@@ -17,12 +19,14 @@ let dateOfRunningIndexJs = new Date();
 const readOptionsFromCommandLine = () => {
     let clFolderSeparator;
     let clLibraryFolder;
+    let commandForPlayingFile;
     let clAlbumlessMaxTrackCount;
     const nodeArgOffset = 2;
     try {
         clFolderSeparator = process.argv[0 + nodeArgOffset];
         clLibraryFolder = process.argv[1 + nodeArgOffset];
-        clAlbumlessMaxTrackCount = process.argv[2 + nodeArgOffset];
+        commandForPlayingFile = process.argv[2 + nodeArgOffset];
+        clAlbumlessMaxTrackCount = process.argv[3 + nodeArgOffset];
     } catch (err) {
         // do nothing
     }
@@ -34,14 +38,19 @@ const readOptionsFromCommandLine = () => {
         clLibraryFolder = "./music";
         log(`Library folder not provided as command line argument #1! Using default '${clLibraryFolder}'...`);
     }
+    if (!commandForPlayingFile) {
+        commandForPlayingFile = commandForPlayingFileFallback;
+        log(`commandForPlayingFile not provided as command line argument #2! Using default '${commandForPlayingFileFallback}'...`);
+    }
     if (!clAlbumlessMaxTrackCount) {
         clAlbumlessMaxTrackCount = 7;
-        log(`Max track count for NO_ALBUM not provided as command line argument #2! Using default '${clAlbumlessMaxTrackCount}'...`);
+        log(`Max track count for NO_ALBUM not provided as command line argument #3! Using default '${clAlbumlessMaxTrackCount}'...`);
     }
     const result = {
         library_folder: clLibraryFolder,
         folder_separator: clFolderSeparator,
-        no_album_max_track_count: clAlbumlessMaxTrackCount
+        no_album_max_track_count: clAlbumlessMaxTrackCount,
+        commandForPlayingFile: commandForPlayingFile,
     };
     log("Starting node-dj with the following options: ", result);
     return result;
@@ -58,6 +67,8 @@ app.use(function (req, res, next) {
 let data = {
     options: readOptionsFromCommandLine()
 };
+
+const dj = DJ.newInstance(data.options.commandForPlayingFile);
 
 const runPreconditions = {
     timesRead: false,

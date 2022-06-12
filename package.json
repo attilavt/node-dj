@@ -1,6 +1,6 @@
 {
     "name": "node-dj",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "description": "Plays mp3 files from certain folders depending on the hour of the day. Can be remote controlled via REST API",
     "keywords": [
         "node-dj",
@@ -22,9 +22,7 @@
     "private": false,
     "dependencies": {
         "body-parser": "^1.18.3",
-        "express": "^4.16.3",
-        "lame": "^1.2.4",
-        "speaker": "^0.4.1"
+        "express": "^4.16.3"
     },
     "devDependencies": {
         "chai": "^4.1.2",
