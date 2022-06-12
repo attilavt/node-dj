@@ -151,20 +151,20 @@ then
   sudo update-rc.d cron defaults # activate crontab (will prompt for password)
 else
   echo "Setting up systemd..."
-  SYSTEMD_SERVICE_FILE = "/etc/systemd/system/nodedj.service"
+  SYSTEMD_SERVICE_FILE="/etc/systemd/system/nodedj.service"
   sudo touch $SYSTEMD_SERVICE_FILE
-  sudo echo "[Unit]" >> $SYSTEMD_SERVICE_FILE
-  
-  sudo echo "Description=Jukebox for playing music" >> $SYSTEMD_SERVICE_FILE
-  sudo echo "After=network.target" >> $SYSTEMD_SERVICE_FILE
+  sudo sh -c "echo \"[Unit]\" >> $SYSTEMD_SERVICE_FILE"
 
-  sudo echo "[Service]" >> $SYSTEMD_SERVICE_FILE
-  sudo echo "ExecStart=/bin/bash /home/altin/node-dj/run.sh" >> $SYSTEMD_SERVICE_FILE
-  sudo echo "RestartSec=10" >> $SYSTEMD_SERVICE_FILE
-  sudo echo "User=$TARGET_USER" >> $SYSTEMD_SERVICE_FILE
+  sudo sh -c "echo \"Description=Jukebox for playing music\" >> $SYSTEMD_SERVICE_FILE"
+  sudo sh -c "echo \"After=network.target\" >> $SYSTEMD_SERVICE_FILE"
 
-  sudo echo "[Install]" >> $SYSTEMD_SERVICE_FILE
-  sudo echo "WantedBy=default.target" >> $SYSTEMD_SERVICE_FILE
+  sudo sh -c "echo \"[Service]\" >> $SYSTEMD_SERVICE_FILE"
+  sudo sh -c "echo \"ExecStart=/bin/bash /home/altin/node-dj/run.sh\" >> $SYSTEMD_SERVICE_FILE"
+  sudo sh -c "echo \"RestartSec=10\" >> $SYSTEMD_SERVICE_FILE"
+  sudo sh -c "echo \"User=$TARGET_USER\" >> $SYSTEMD_SERVICE_FILE"
+
+  sudo sh -c "echo \"[Install]\" >> $SYSTEMD_SERVICE_FILE"
+  sudo sh -c "echo \"WantedBy=default.target\" >> $SYSTEMD_SERVICE_FILE"
   sudo systemctl enable nodedj
 fi
 
