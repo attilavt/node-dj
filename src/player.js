@@ -51,7 +51,9 @@ const playSong = function (path, callbackWhenDone, dj) {
     const exitFunction = function(code, signal) {
         const date3 = new Date().valueOf();
         if(signal === 'SIGTERM') {
-            log("SIGTERM for", path, "after", tools.msToTime(date3 - date1), code, signal);
+            log("SIGTERM for", path, "after", tools.msToTime(date3 - date1), 'not calling callback. received:', code, signal);
+        } else if(randomNoOfCurrentSong !== randomNoOfThis) {
+            log("finished playing", path, "after", tools.msToTime(date3 - date1), 'with signal', signal, 'but player has already progressed to', currentSongPath, 'not calling callback.');
         } else {
             log("finished playing", path, "after", tools.msToTime(date3 - date1), code, signal);
             isPlaying = false;
