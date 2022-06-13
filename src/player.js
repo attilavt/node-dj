@@ -16,20 +16,22 @@ let currentProcess;
 /** @type {string} */
 let currentSongPath;
 
-const clearCurrentSongData = function() {
-    log('Clearing current song data of', currentSongPath);
+const clearCurrentSongData = function(source) {
+    log('Clearing current song data from', source, 'for', currentSongPath);
+    randomNoOfCurrentSong = undefined;
     currentProcess = undefined;
     currentSongPath = undefined;
-    randomNoOfCurrentSong = undefined;
 };
 
 const stopPlayback = function () {
-    if (currentProcess) {
-        log("Stopping playback of old song:", currentSongPath);
-        isPlaying = false;
-        currentProcess.kill();
-        clearCurrentSongData();
+    if (!currentProcess) {
+        log("Why is there no currentProcess?", randomNoOfCurrentSong, currentSongPath);
+        return;
     }
+    log("Stopping playback of old song:", currentSongPath);
+    isPlaying = false;
+    currentProcess.kill();
+    clearCurrentSongData('stopPlayback');
 };
 
 const playSong = function (path, callbackWhenDone, dj) {
@@ -49,7 +51,7 @@ const playSong = function (path, callbackWhenDone, dj) {
         } else {
             log("finished playing", path, "after", tools.msToTime(date3 - date1), code, signal);
             isPlaying = false;
-            clearCurrentSongData();
+            clearCurrentSongData('exitFunction success');
             callbackWhenDone(dj);
         }
     };
@@ -62,7 +64,7 @@ const playSong = function (path, callbackWhenDone, dj) {
                 if (randomNoOfCurrentSong === randomNoOfThis) {
                     log("It seems that the music is stuck! Re-issuing playback.");
                     isPlaying = false;
-                    clearCurrentSongData();
+                    clearCurrentSongData('errorFunction');
                     callbackWhenDone(dj);
                 } else {
                     debug("Music seems to play on even after error.");
