@@ -1,5 +1,6 @@
 const tools = require('./tools');
 const { exec, ChildProcess } = require('child_process');
+const { AbortController } = require("node-abort-controller");
 
 const logLog = true;
 const logDebug = false;
@@ -13,11 +14,21 @@ let currentSpeaker;
 /** @type {ChildProcess} */
 let currentProcess;
 
+/** @type {AbortController} */
+let currentAbortController;
+
 const stopPlayback = function () {
-    if (currentProcess) {
+    if (currentAbortController) {
         log("Stopping playback of old song...");
         isPlaying = false;
-        currentProcess.kill(9);
+        currentAbortController.abort();
+        currentAbortController = undefined;
+        // const killed = currentProcess.kill();
+        const killed = currentProcess.killed;
+        if (!killed) {
+            throw new Error('Could not kill');
+        }
+        currentProcess = undefined;
     }
 };
 
@@ -30,6 +41,10 @@ const playSong = function (path, callbackWhenDone, dj) {
     const date2 = new Date().valueOf();
     const randomNoOfThis = "" + Math.random();
     currentSpeaker = randomNoOfThis;
+
+    currentAbortController = new AbortController();
+    const { signal } = currentAbortController;
+
     /**
      * @param {import('child_process').ExecException} error 
      * @param {string} stdout 
@@ -42,7 +57,13 @@ const playSong = function (path, callbackWhenDone, dj) {
             const date3 = new Date().valueOf();
             log("finished playing", path, "after", tools.msToTime(date3 - date1));
             isPlaying = false;
+            if(currentSpeaker === randomNoOfThis) {
+                currentAbortController = undefined;
+                currentSpeaker = undefined;
+            }
             callbackWhenDone(dj);
+        } else if(error instanceof AbortSignal) {
+            log("abort signal for " + path);
         } else {
             log("speaker error for " + path + ", maybe because of skip?", error, stdout, stderr);
             const tenSeconds = 10 * 1000;
@@ -57,7 +78,7 @@ const playSong = function (path, callbackWhenDone, dj) {
             }, tenSeconds);
         }
     };
-    currentProcess = exec(`${dj.commandForPlayingFile} "${path}"`, callbackForCommandline);
+    currentProcess = exec(`${dj.commandForPlayingFile} "${path}"`, {signal}, callbackForCommandline);
 }
 module.exports = {
     /**
