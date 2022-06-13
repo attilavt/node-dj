@@ -1,5 +1,5 @@
 const tools = require('./tools');
-const { exec, ChildProcess } = require('child_process');
+const { spawn } = require('child_process');
 
 const logLog = true;
 const logDebug = false;
@@ -8,16 +8,27 @@ const debug = tools.logGenerator(() => logDebug, "player");
 let isPlaying = false;
 
 /** @type {string} */
-let currentSpeaker;
+let randomNoOfCurrentSong;
 
-/** @type {ChildProcess} */
+/** @type {import('child_process').ChildProcessWithoutNullStreams} */
 let currentProcess;
+
+/** @type {string} */
+let currentSongPath;
+
+const clearCurrentSongData = function() {
+    log('Clearing current song data of', currentSongPath);
+    currentProcess = undefined;
+    currentSongPath = undefined;
+    randomNoOfCurrentSong = undefined;
+};
 
 const stopPlayback = function () {
     if (currentProcess) {
-        log("Stopping playback of old song...");
+        log("Stopping playback of old song:", currentSongPath);
         isPlaying = false;
-        currentProcess.kill(9);
+        currentProcess.kill();
+        clearCurrentSongData();
     }
 };
 
@@ -27,37 +38,41 @@ const playSong = function (path, callbackWhenDone, dj) {
 
     const date1 = new Date().valueOf();
     isPlaying = true;
-    const date2 = new Date().valueOf();
     const randomNoOfThis = "" + Math.random();
-    currentSpeaker = randomNoOfThis;
-    /**
-     * @param {import('child_process').ExecException} error 
-     * @param {string} stdout 
-     * @param {string} stderr 
-     */
-    const callbackForCommandline = function (error, stdout, stderr) {
-        log(`stdout ${stdout}`);
-        log(`stderr ${stderr}`);
-        if(!error) {
-            const date3 = new Date().valueOf();
-            log("finished playing", path, "after", tools.msToTime(date3 - date1));
-            isPlaying = false;
-            callbackWhenDone(dj);
+    randomNoOfCurrentSong = randomNoOfThis;
+    currentSongPath = path;
+
+    const exitFunction = function(code, signal) {
+        const date3 = new Date().valueOf();
+        if(signal === 'SIGTERM') {
+            log("SIGTERM for", path, "after", tools.msToTime(date3 - date1), code, signal);
         } else {
-            log("speaker error for " + path + ", maybe because of skip?", error, stdout, stderr);
-            const tenSeconds = 10 * 1000;
+            log("finished playing", path, "after", tools.msToTime(date3 - date1), code, signal);
+            isPlaying = false;
+            clearCurrentSongData();
+            callbackWhenDone(dj);
+        }
+    };
+
+    /** @param {Error} error */
+    const errorFunction = function(error) {
+        log("speaker error for " + path + ", maybe because of skip?", error);
+            const oneSecond = 1 * 1000;
             setTimeout(() => {
-                if (currentSpeaker === randomNoOfThis) {
+                if (randomNoOfCurrentSong === randomNoOfThis) {
                     log("It seems that the music is stuck! Re-issuing playback.");
                     isPlaying = false;
+                    clearCurrentSongData();
                     callbackWhenDone(dj);
                 } else {
                     debug("Music seems to play on even after error.");
                 }
-            }, tenSeconds);
-        }
-    };
-    currentProcess = exec(`${dj.commandForPlayingFile} "${path}"`, callbackForCommandline);
+            }, oneSecond);
+    }
+    currentProcess = spawn(dj.commandForPlayingFile, [path]);
+
+    currentProcess.on('error', errorFunction);
+    currentProcess.on('exit', exitFunction);
 }
 module.exports = {
     /**
