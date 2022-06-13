@@ -30,23 +30,8 @@ sudo apt-get install -y openssh-server vim nodejs mpg123 net-tools wireless-tool
 sudo npm install -g react-scripts
 
 # enable ssh access from outside
-sudo ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key
-sudo ssh-keygen -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key
-sudo ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key
 sudo systemctl status ssh
 sudo systemctl enable ssh
-
-# switch branch if arm-64
-echo "Are you running the program on a armv8 / arm64 architecture? (e.g. raspberry pi 4)"
-echo "Type \"yes\" to continue with arm64 and anything else to continue without arm64"
-read IS_ARM64
-if [[ $IS_ARM64 == "yes" ]]
-then
-	echo "Continuing with arm64-specific branch"
-  git checkout master-arm64
-else
-  echo "Continuing with normal branch (not arm64-specific)"
-fi
 
 # build node-dj
 npm install
