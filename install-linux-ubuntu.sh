@@ -44,6 +44,11 @@ echo "How do you want to make the program start at boot time?"
 echo "Type \"cron\" to continue with cron setup or anything else for systemd (default)"
 read MECHANISM_FOR_RUNNING_AT_BOOT_TIME
 
+# query _unmute and set volume at boot_ type
+echo "Do you want the device's volume to be set to _unmuted_ and 100% at boot time?"
+echo "Type \"yes\" to continue with setting volume at boot time or anything else for not setting volume (default)"
+read SET_VOLUME_AT_BOOT_TIME
+
 # query optional maxoldspacesize parameter
 echo "Do you want the run script to set the max-old-space-size parameter to solve npm install bugs?"
 echo "Type \"setparam\" to continue with max-old-space-size parameter or anything else for no (default)"
@@ -151,6 +156,18 @@ else
   sudo sh -c "echo \"[Install]\" >> $SYSTEMD_SERVICE_FILE"
   sudo sh -c "echo \"WantedBy=default.target\" >> $SYSTEMD_SERVICE_FILE"
   sudo systemctl enable nodedj
+fi
+
+# Set volume to unmute and 100% at boot time
+if [[ $SET_VOLUME_AT_BOOT_TIME == "yes" ]]
+then
+	echo "Please enter into crontab:"
+  echo "SHELL=/bin/bash"
+  echo "'@reboot amixer -c 0 set Master playback 99% unmute'"
+  echo "Press enter to continue..."
+  read UNUSED
+  crontab -e
+  sudo update-rc.d cron defaults # activate crontab (will prompt for password)
 fi
 
 echo "Do you want to write ~/.asoundrc to avoid playback errors when switching songs?"
