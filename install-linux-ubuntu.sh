@@ -39,14 +39,14 @@ npm install
 # build node-dj-controller
 cd frontend && npm install && npm run build && cd ..
 
-# query startup type
-echo "How do you want to make the program run at startup?"
+# query mechanism for starting program at boot time
+echo "How do you want to make the program start at boot time?"
 echo "Type \"cron\" to continue with cron setup or anything else for systemd (default)"
-read STARTUP_BY_CRON
+read MECHANISM_FOR_RUNNING_AT_BOOT_TIME
 
 # query optional maxoldspacesize parameter
 echo "Do you want the run script to set the max-old-space-size parameter to solve npm install bugs?"
-echo "Type \"setparam\" to continue with cron setup or anything else for no (default)"
+echo "Type \"setparam\" to continue with max-old-space-size parameter or anything else for no (default)"
 read SET_MAX_OLD_SPACE_SIZE_PARAM
 
 # query whether there should be a wait when starting
@@ -63,19 +63,19 @@ echo "#!/bin/bash" >> run.sh
 echo '' >> run.sh
 echo '# check for workingdir, might be ~ due to crontab execution' >> run.sh
 echo 'WORKINGDIR=$(pwd)' >> run.sh
-if [[ $STARTUP_BY_CRON == "cron" ]]
+if [[ $MECHANISM_FOR_RUNNING_AT_BOOT_TIME == "cron" ]]
 then
   echo '# add PATH to in case cron doesnt have it' >> run.sh
   echo "export PATH=\"$PATH\"" >> run.sh
   echo "export XDG_RUNTIME_DIR=\"/run/user/1000\"" >> run.sh
 fi
-echo 'STARTUP_MSG=""' >> run.sh
+echo 'MSG_WHEN_STARTING_PROGRAM=""' >> run.sh
 echo 'if [ "$WORKINGDIR" == "*node-dj" ]' >> run.sh
 echo 'then' >> run.sh
-echo '    STARTUP_MSG="Already in folder $WORKINGDIR"' >> run.sh
+echo '    MSG_WHEN_STARTING_PROGRAM="Already in folder $WORKINGDIR"' >> run.sh
 echo 'else' >> run.sh
 echo "    cd /home/$TARGET_USER/node-dj" >> run.sh
-echo '    STARTUP_MSG="Switched to node-dj folder from $WORKINGDIR"' >> run.sh
+echo '    MSG_WHEN_STARTING_PROGRAM="Switched to node-dj folder from $WORKINGDIR"' >> run.sh
 echo 'fi' >> run.sh
 
 
@@ -95,9 +95,9 @@ then
   echo "" >> run.sh
 fi
 echo '' >> run.sh
-echo '# startup and debugging messages' >> run.sh
+echo '# program start and debugging messages' >> run.sh
 echo 'echo "Starting run.sh at $DATE as $USER" > run.log' >> run.sh
-echo 'echo "$STARTUP_MSG" >> run.log' >> run.sh
+echo 'echo "$MSG_WHEN_STARTING_PROGRAM" >> run.log' >> run.sh
 echo "pwd >> run.log" >> run.sh
 echo '' >> run.sh
 echo 'LSHWNET=$(lshw -C network 2> /dev/null)' >> run.sh
@@ -124,8 +124,8 @@ fi
 echo "npm run start \"/\" \"$LIBRARY_PATH\" >> run.log 2>> run.log" >> run.sh
 chmod +x run.sh
 
-# Boot on startup
-if [[ $STARTUP_BY_CRON == "cron" ]]
+# How to start program at boot time
+if [[ $MECHANISM_FOR_RUNNING_AT_BOOT_TIME == "cron" ]]
 then
 	echo "Please enter into crontab:"
   echo "SHELL=/bin/bash"
